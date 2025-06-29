@@ -41,7 +41,7 @@
   resizeCanvas();
 
   const cx = () => canvas.width / 2;
-  const cy = () => canvas.height / 2.2; // نرفع المركز قليلًا للأعلى
+  const cy = () => canvas.height / 2.2;
 
   function isA(n) {
     if (n < 2) return false;
@@ -76,7 +76,7 @@
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     t += speed;
 
-    const scale = Math.min(canvas.width, canvas.height) * 0.1 / 50;
+    const scale = Math.min(canvas.width, canvas.height) * 0.08 / 100;
 
     let lastAngleRed = 0;
     let lastAngleBlue = 0;
