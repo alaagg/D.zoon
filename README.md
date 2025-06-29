@@ -68,7 +68,7 @@
   let running = true;
   const speed = 0.005;
   const radius = 3;
-  const touchThreshold = 4;
+  const touchThreshold = 2; // ← هنا التعديل: لمس فقط عند 2 بكسل
 
   const toggleBtn = document.getElementById("toggleBtn");
   toggleBtn.onclick = () => {
@@ -118,10 +118,4 @@
       ctx.fill();
     });
 
-    requestAnimationFrame(draw);
-  }
-
-  draw();
-</script>
-</body>
-</html>
+    requestAnimationFrame
