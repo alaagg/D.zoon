@@ -76,7 +76,7 @@
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     t += speed;
 
-    const scale = Math.min(canvas.width, canvas.height) * 0.08 / 100;
+    const scale = Math.min(canvas.width, canvas.height) * 0.05 / 100;
 
     let lastAngleRed = 0;
     let lastAngleBlue = 0;
