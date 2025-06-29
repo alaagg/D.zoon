@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>حلزونين + أثر دائم عند الملامسة</title>
+  <title>أثر دائم عند الملامسة فقط</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <style>
     html, body {
@@ -15,8 +15,6 @@
     }
     canvas {
       display: block;
-      width: 100vw;
-      height: 100vh;
       background: black;
     }
     button {
@@ -36,9 +34,21 @@
 <script>
   const canvas = document.getElementById("canvas");
   const ctx = canvas.getContext("2d");
-  let w = canvas.width = window.innerWidth;
-  let h = canvas.height = window.innerHeight;
-  const cx = w / 2, cy = h / 2;
+
+  const effectCanvas = document.createElement("canvas");
+  const effectCtx = effectCanvas.getContext("2d");
+
+  let w, h, cx, cy;
+  function resizeCanvas() {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+    effectCanvas.width = w;
+    effectCanvas.height = h;
+    cx = w / 2;
+    cy = h / 2;
+  }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
 
   function isA(n) {
     if (n < 2) return false;
@@ -58,13 +68,7 @@
   let running = true;
   const speed = 0.005;
   const radius = 3;
-  const touchThreshold = 4; // مسافة الملامسة
-
-  // أثر دائم
-  const effectCanvas = document.createElement("canvas");
-  effectCanvas.width = w;
-  effectCanvas.height = h;
-  const effectCtx = effectCanvas.getContext("2d");
+  const touchThreshold = 4;
 
   const toggleBtn = document.getElementById("toggleBtn");
   toggleBtn.onclick = () => {
@@ -78,6 +82,7 @@
     ctx.clearRect(0, 0, w, h);
     t += speed;
 
+    // رسم الأثر الدائم أولاً
     ctx.drawImage(effectCanvas, 0, 0);
 
     aNumbers.forEach(i => {
@@ -95,9 +100,11 @@
       const distance = Math.sqrt(dx * dx + dy * dy);
 
       if (distance < touchThreshold) {
+        const ex = (x1 + x2) / 2;
+        const ey = (y1 + y2) / 2;
         effectCtx.fillStyle = "yellow";
         effectCtx.beginPath();
-        effectCtx.arc((x1 + x2) / 2, (y1 + y2) / 2, radius, 0, Math.PI * 2);
+        effectCtx.arc(ex, ey, radius, 0, Math.PI * 2);
         effectCtx.fill();
       }
 
