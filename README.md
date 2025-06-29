@@ -2,10 +2,23 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>حلزونين + أثر دائم عند الالتقاء</title>
+  <title>حلزونين + أثر دائم عند الملامسة</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <style>
-    body { margin: 0; background: black; overflow: hidden; }
-    canvas { display: block; width: 100vw; height: 100vh; background: black; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      overflow: hidden;
+      height: 100%;
+      width: 100%;
+    }
+    canvas {
+      display: block;
+      width: 100vw;
+      height: 100vh;
+      background: black;
+    }
     button {
       position: fixed;
       top: 20px;
@@ -19,6 +32,7 @@
 <body>
 <canvas id="canvas"></canvas>
 <button id="toggleBtn">⏸️ إيقاف</button>
+
 <script>
   const canvas = document.getElementById("canvas");
   const ctx = canvas.getContext("2d");
@@ -44,6 +58,7 @@
   let running = true;
   const speed = 0.005;
   const radius = 3;
+  const touchThreshold = 4; // مسافة الملامسة
 
   // أثر دائم
   const effectCanvas = document.createElement("canvas");
@@ -63,7 +78,6 @@
     ctx.clearRect(0, 0, w, h);
     t += speed;
 
-    // ارسم الأثر الدائم أولًا
     ctx.drawImage(effectCanvas, 0, 0);
 
     aNumbers.forEach(i => {
@@ -80,15 +94,13 @@
       const dy = y1 - y2;
       const distance = Math.sqrt(dx * dx + dy * dy);
 
-      if (distance < 2) {
-        // أثر دائم يُرسم مرة واحدة
+      if (distance < touchThreshold) {
         effectCtx.fillStyle = "yellow";
         effectCtx.beginPath();
         effectCtx.arc((x1 + x2) / 2, (y1 + y2) / 2, radius, 0, Math.PI * 2);
         effectCtx.fill();
       }
 
-      // نقاط الحلزون الحالية
       ctx.fillStyle = "red";
       ctx.beginPath();
       ctx.arc(x1, y1, radius, 0, Math.PI * 2);
