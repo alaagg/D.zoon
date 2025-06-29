@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>حلزونين متعاكسين + زاويتين دقيقة + حجم متكيّف + حركة ناعمة</title>
+  <title>حلزونين بحجم مناسب + زاويتين</title>
   <style>
     body { margin: 0; background: black; overflow: hidden; color: white; font-family: sans-serif; }
     canvas { display: block; background: black; }
@@ -62,7 +62,7 @@
 
   let t = 0;
   let running = true;
-  const speed = 0.0025; // أبطأ من السابق
+  const speed = 0.0025;
 
   const toggleBtn = document.getElementById("toggleBtn");
   toggleBtn.onclick = () => {
@@ -83,8 +83,10 @@
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     t += speed;
 
+    const scale = (canvas.width + canvas.height) / 200; // ⬅️ مناسب لجميع الشاشات
+
     for (let i of aNumbers) {
-      const r = i * 0.5;
+      const r = i * 0.15 * scale / 100; // ⬅️ التناسب مع الشاشة
       const a1 = i * 0.1 + t;
       const a2 = i * 0.1 - t;
 
