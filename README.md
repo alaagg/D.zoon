@@ -42,7 +42,7 @@ for (let i = 0; i < N; i++) {
 
 let t = 0;
 let running = true;
-const speed = 0.0005;
+const speed = 0.005;
 
 const toggleBtn = document.getElementById("toggleBtn");
 toggleBtn.onclick = () => {
