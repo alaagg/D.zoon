@@ -83,10 +83,10 @@
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     t += speed;
 
-    const scale = (canvas.width + canvas.height) / 200; // ⬅️ مناسب لجميع الشاشات
+    const scale = Math.min(canvas.width, canvas.height) / 100; // مقياس متوازن حسب أصغر بُعد
 
     for (let i of aNumbers) {
-      const r = i * 0.15 * scale / 100; // ⬅️ التناسب مع الشاشة
+      const r = i * scale * 0.03; // ⬅️ حجم مناسب
       const a1 = i * 0.1 + t;
       const a2 = i * 0.1 - t;
 
