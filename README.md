@@ -2,23 +2,46 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>حلزونات A متعاكسة</title>
+  <title>حلزونات A مع تحكم وزوايا</title>
   <style>
     body { margin: 0; background: black; overflow: hidden; }
     canvas { display: block; margin: auto; background: black; }
+    #controls {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      z-index: 10;
+      color: white;
+      font-family: sans-serif;
+    }
+    button {
+      font-size: 16px;
+      padding: 6px 12px;
+      margin-bottom: 10px;
+    }
   </style>
 </head>
 <body>
 <canvas id="canvas"></canvas>
+<div id="controls">
+  <button id="toggleBtn">⏸️ إيقاف</button>
+  <div>زاوية دوران أحمر: <span id="angleRed">0</span>°</div>
+  <div>زاوية دوران أزرق: <span id="angleBlue">0</span>°</div>
+</div>
+
 <script>
   const canvas = document.getElementById("canvas");
   const ctx = canvas.getContext("2d");
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-  const cx = canvas.width / 2;
-  const cy = canvas.height / 2;
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
 
-  // دالة التحقق من العدد A (أولي)
+  const cx = () => canvas.width / 2;
+  const cy = () => canvas.height / 2;
+
   function isA(n) {
     if (n < 2) return false;
     for (let i = 2; i <= Math.sqrt(n); i++) {
@@ -27,7 +50,6 @@
     return true;
   }
 
-  // توليد أعداد A
   const N = 1000;
   const A = [];
   for (let i = 0; i < N; i++) {
@@ -35,31 +57,53 @@
   }
 
   let t = 0;
-  const speed = 0.01;
+  let running = true;
+  const speed = 0.003; // سرعة أبطأ
+  const angleRedDisplay = document.getElementById("angleRed");
+  const angleBlueDisplay = document.getElementById("angleBlue");
+
+  const toggleBtn = document.getElementById("toggleBtn");
+  toggleBtn.onclick = () => {
+    running = !running;
+    toggleBtn.textContent = running ? "⏸️ إيقاف" : "▶️ تشغيل";
+    if (running) draw();
+  };
 
   function draw() {
+    if (!running) return;
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     t += speed;
 
+    let lastAngleRed = 0;
+    let lastAngleBlue = 0;
+
     A.forEach(i => {
-      const r = i * 0.6;
+      const r = i * 0.5;
       const baseAngle = i * 0.1;
 
-      // 4 حلزونات بزاوايا: 0، 90، 180، 270
       const angles = [0, Math.PI/2, Math.PI, 3*Math.PI/2];
       const colors = ['red', 'blue'];
 
       angles.forEach((offset, index) => {
-        const sign = index % 2 === 0 ? 1 : -1; // كل زوج عكس الآخر
+        const sign = index % 2 === 0 ? 1 : -1;
         const angle = baseAngle + sign * t + offset;
-        const x = cx + r * Math.cos(angle);
-        const y = cy + r * Math.sin(angle);
+        const x = cx() + r * Math.cos(angle);
+        const y = cy() + r * Math.sin(angle);
         ctx.fillStyle = colors[index % 2];
         ctx.beginPath();
-        ctx.arc(x, y, 2, 0, Math.PI * 2);
+        ctx.arc(x, y, 1.5, 0, Math.PI * 2);
         ctx.fill();
+
+        // حفظ آخر زاويتين للعرض
+        if (index === 0) lastAngleRed = angle;
+        if (index === 1) lastAngleBlue = angle;
       });
     });
+
+    // تحديث عرض الزوايا
+    angleRedDisplay.textContent = (lastAngleRed * 180 / Math.PI % 360).toFixed(2);
+    angleBlueDisplay.textContent = (lastAngleBlue * 180 / Math.PI % 360).toFixed(2);
 
     requestAnimationFrame(draw);
   }
