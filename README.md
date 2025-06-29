@@ -2,21 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>أثر دائم يلائم شاشة الهاتف</title>
+  <title>حلزونين + أثر دائم عند الالتقاء</title>
   <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-      background: black;
-      height: 100%;
-      width: 100%;
-    }
-    canvas {
-      display: block;
-      width: 100vw;
-      height: 100vh;
-    }
+    body { margin: 0; background: black; overflow: hidden; }
+    canvas { display: block; width: 100vw; height: 100vh; background: black; }
     button {
       position: fixed;
       top: 20px;
@@ -31,88 +20,89 @@
 <canvas id="canvas"></canvas>
 <button id="toggleBtn">⏸️ إيقاف</button>
 <script>
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
+  const canvas = document.getElementById("canvas");
+  const ctx = canvas.getContext("2d");
+  let w = canvas.width = window.innerWidth;
+  let h = canvas.height = window.innerHeight;
+  const cx = w / 2, cy = h / 2;
 
-function resizeCanvas() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-}
-resizeCanvas();
-window.addEventListener("resize", resizeCanvas);
-
-let w = canvas.width;
-let h = canvas.height;
-const cx = () => canvas.width / 2;
-const cy = () => canvas.height / 2;
-
-// مقياس حسب أصغر بعد لتلائم الهاتف
-function getScale() {
-  return Math.min(canvas.width, canvas.height) / 2000;
-}
-
-function isA(n) {
-  if (n < 2) return false;
-  for (let i = 2; i * i <= n; i++) {
-    if (n % i === 0) return false;
+  function isA(n) {
+    if (n < 2) return false;
+    for (let i = 2; i * i <= n; i++) {
+      if (n % i === 0) return false;
+    }
+    return true;
   }
-  return true;
-}
 
-const N = 1000;
-const aNumbers = [];
-for (let i = 0; i < N; i++) {
-  if (isA(i)) aNumbers.push(i);
-}
+  const N = 1000;
+  const aNumbers = [];
+  for (let i = 0; i < N; i++) {
+    if (isA(i)) aNumbers.push(i);
+  }
 
-let t = 0;
-let running = true;
-const speed = 0.005;
+  let t = 0;
+  let running = true;
+  const speed = 0.005;
+  const radius = 3;
 
-const toggleBtn = document.getElementById("toggleBtn");
-toggleBtn.onclick = () => {
-  running = !running;
-  toggleBtn.textContent = running ? "⏸️ إيقاف" : "▶️ تشغيل";
-  if (running) draw();
-};
+  // أثر دائم
+  const effectCanvas = document.createElement("canvas");
+  effectCanvas.width = w;
+  effectCanvas.height = h;
+  const effectCtx = effectCanvas.getContext("2d");
 
-const memory = {};
+  const toggleBtn = document.getElementById("toggleBtn");
+  toggleBtn.onclick = () => {
+    running = !running;
+    toggleBtn.textContent = running ? "⏸️ إيقاف" : "▶️ تشغيل";
+    if (running) draw();
+  };
 
-function draw() {
-  if (!running) return;
+  function draw() {
+    if (!running) return;
+    ctx.clearRect(0, 0, w, h);
+    t += speed;
 
-  t += speed;
-  const scale = getScale();
+    // ارسم الأثر الدائم أولًا
+    ctx.drawImage(effectCanvas, 0, 0);
 
-  aNumbers.forEach(i => {
-    const r = i * scale * 100;
-    const angle1 = i * 0.1 + t;
-    const angle2 = i * 0.1 - t;
+    aNumbers.forEach(i => {
+      const r = i * 0.5;
+      const angle1 = i * 0.1 + t;
+      const angle2 = i * 0.1 - t;
 
-    const x1 = cx() + r * Math.cos(angle1);
-    const y1 = cy() + r * Math.sin(angle1);
-    const x2 = cx() + r * Math.cos(angle2);
-    const y2 = cy() + r * Math.sin(angle2);
+      const x1 = cx + r * Math.cos(angle1);
+      const y1 = cy + r * Math.sin(angle1);
+      const x2 = cx + r * Math.cos(angle2);
+      const y2 = cy + r * Math.sin(angle2);
 
-    drawAndRecord(x1, y1);
-    drawAndRecord(x2, y2);
-  });
+      const dx = x1 - x2;
+      const dy = y1 - y2;
+      const distance = Math.sqrt(dx * dx + dy * dy);
 
-  requestAnimationFrame(draw);
-}
+      if (distance < 2) {
+        // أثر دائم يُرسم مرة واحدة
+        effectCtx.fillStyle = "yellow";
+        effectCtx.beginPath();
+        effectCtx.arc((x1 + x2) / 2, (y1 + y2) / 2, radius, 0, Math.PI * 2);
+        effectCtx.fill();
+      }
 
-function drawAndRecord(x, y) {
-  const key = Math.round(x) + "," + Math.round(y);
-  memory[key] = (memory[key] || 0) + 0.01;
-  const alpha = Math.min(memory[key], 1);
+      // نقاط الحلزون الحالية
+      ctx.fillStyle = "red";
+      ctx.beginPath();
+      ctx.arc(x1, y1, radius, 0, Math.PI * 2);
+      ctx.fill();
 
-  ctx.fillStyle = `rgba(255,255,255,${alpha})`;
-  ctx.beginPath();
-  ctx.arc(x, y, 1.5, 0, Math.PI * 2); // 3 بكسل
-  ctx.fill();
-}
+      ctx.beginPath();
+      ctx.arc(x2, y2, radius, 0, Math.PI * 2);
+      ctx.fill();
+    });
 
-draw();
+    requestAnimationFrame(draw);
+  }
+
+  draw();
 </script>
 </body>
 </html>
