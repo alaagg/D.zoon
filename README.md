@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>حلزونين متعاكسين + زر توقف</title>
+  <title>حلزونين متعاكسين + زاويتين دقيقتين</title>
   <style>
-    body { margin: 0; background: black; overflow: hidden; }
+    body { margin: 0; background: black; overflow: hidden; color: white; font-family: sans-serif; }
     canvas { display: block; margin: auto; background: black; }
     button {
       position: fixed;
@@ -14,18 +14,32 @@
       font-size: 16px;
       z-index: 10;
     }
+    #angleDisplay {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      font-size: 18px;
+      background: rgba(0,0,0,0.7);
+      padding: 10px;
+      border-radius: 8px;
+    }
   </style>
 </head>
 <body>
 <canvas id="canvas"></canvas>
 <button id="toggleBtn">⏸️ إيقاف</button>
+<div id="angleDisplay">
+  ⭕ زاوية يمين: <span id="angleRight">0.0000</span>°<br>
+  ⭕ زاوية يسار: <span id="angleLeft">0.0000</span>°
+</div>
 
 <script>
   const canvas = document.getElementById("canvas");
   const ctx = canvas.getContext("2d");
-  let w = canvas.width = window.innerWidth;
-  let h = canvas.height = window.innerHeight;
-  const cx = w / 2, cy = h / 2;
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const cx = canvas.width / 2;
+  const cy = canvas.height / 2;
 
   function isA(n) {
     if (n < 2) return false;
@@ -35,49 +49,54 @@
     return true;
   }
 
-  const N = 1000;
+  const N = 1500;
   const aNumbers = [];
   for (let i = 0; i < N; i++) {
     if (isA(i)) aNumbers.push(i);
   }
 
   let t = 0;
-  let running = true;  // حالة التشغيل
-  const speed = 0.0005;
+  let running = true;
+  const speed = 0.01;
 
-  // الزر
   const toggleBtn = document.getElementById("toggleBtn");
   toggleBtn.onclick = () => {
     running = !running;
     toggleBtn.textContent = running ? "⏸️ إيقاف" : "▶️ تشغيل";
-    if (running) draw();  // إعادة التشغيل
+    if (running) draw();
   };
+
+  const angleRightEl = document.getElementById("angleRight");
+  const angleLeftEl = document.getElementById("angleLeft");
 
   function draw() {
     if (!running) return;
 
-    ctx.clearRect(0, 0, w, h);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     t += speed;
 
-    aNumbers.forEach(i => {
-      const r = i * 0.5;
-      const angle1 = i * 0.1 + t;
-      const angle2 = i * 0.1 - t;
+    for (let i of aNumbers) {
+      const r = i * 0.6;
+      const a1 = i * 0.1 + t;
+      const a2 = i * 0.1 - t;
 
-      const x1 = cx + r * Math.cos(angle1);
-      const y1 = cy + r * Math.sin(angle1);
-      const x2 = cx + r * Math.cos(angle2);
-      const y2 = cy + r * Math.sin(angle2);
+      const x1 = cx + r * Math.cos(a1);
+      const y1 = cy + r * Math.sin(a1);
+      const x2 = cx + r * Math.cos(a2);
+      const y2 = cy + r * Math.sin(a2);
 
       ctx.fillStyle = "red";
-      ctx.beginPath();
-      ctx.arc(x1, y1, 2, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.beginPath(); ctx.arc(x1, y1, 2, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(x2, y2, 2, 0, Math.PI * 2); ctx.fill();
+    }
 
-      ctx.beginPath();
-      ctx.arc(x2, y2, 2, 0, Math.PI * 2);
-      ctx.fill();
-    });
+    // زاوية أدق بناءً على أصغر عدد A
+    const first = aNumbers[0]; // أصغر A
+    const angleRight = (first * 0.1 + t) % (2 * Math.PI);
+    const angleLeft = (first * 0.1 - t) % (2 * Math.PI);
+
+    angleRightEl.textContent = (angleRight * 180 / Math.PI).toFixed(4);
+    angleLeftEl.textContent = (angleLeft * 180 / Math.PI).toFixed(4);
 
     requestAnimationFrame(draw);
   }
