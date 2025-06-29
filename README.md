@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>حلزونات A مع تحكم وزوايا</title>
+  <title>حلزونات A للهاتف</title>
   <style>
     body { margin: 0; background: black; overflow: hidden; }
-    canvas { display: block; margin: auto; background: black; }
+    canvas { display: block; background: black; }
     #controls {
       position: fixed;
       top: 10px;
@@ -24,14 +24,15 @@
 <body>
 <canvas id="canvas"></canvas>
 <div id="controls">
-  <button id="toggleBtn">⏸️ إيقاف</button>
-  <div>زاوية دوران أحمر: <span id="angleRed">0</span>°</div>
-  <div>زاوية دوران أزرق: <span id="angleBlue">0</span>°</div>
+  <button id="toggleBtn">⏸️ إيقاف</button><br>
+  زاوية أحمر: <span id="angleRed">0</span>°<br>
+  زاوية أزرق: <span id="angleBlue">0</span>°
 </div>
 
 <script>
   const canvas = document.getElementById("canvas");
   const ctx = canvas.getContext("2d");
+
   function resizeCanvas() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -40,7 +41,7 @@
   resizeCanvas();
 
   const cx = () => canvas.width / 2;
-  const cy = () => canvas.height / 2;
+  const cy = () => canvas.height / 2.2; // نرفع المركز قليلًا للأعلى
 
   function isA(n) {
     if (n < 2) return false;
@@ -58,11 +59,11 @@
 
   let t = 0;
   let running = true;
-  const speed = 0.003; // سرعة أبطأ
+  const speed = 0.003;
+  const toggleBtn = document.getElementById("toggleBtn");
   const angleRedDisplay = document.getElementById("angleRed");
   const angleBlueDisplay = document.getElementById("angleBlue");
 
-  const toggleBtn = document.getElementById("toggleBtn");
   toggleBtn.onclick = () => {
     running = !running;
     toggleBtn.textContent = running ? "⏸️ إيقاف" : "▶️ تشغيل";
@@ -75,13 +76,14 @@
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     t += speed;
 
+    const scale = Math.min(canvas.width, canvas.height) * 0.1 / 50;
+
     let lastAngleRed = 0;
     let lastAngleBlue = 0;
 
     A.forEach(i => {
-      const r = i * 0.5;
+      const r = i * scale;
       const baseAngle = i * 0.1;
-
       const angles = [0, Math.PI/2, Math.PI, 3*Math.PI/2];
       const colors = ['red', 'blue'];
 
@@ -92,16 +94,14 @@
         const y = cy() + r * Math.sin(angle);
         ctx.fillStyle = colors[index % 2];
         ctx.beginPath();
-        ctx.arc(x, y, 1.5, 0, Math.PI * 2);
+        ctx.arc(x, y, 1.4, 0, Math.PI * 2);
         ctx.fill();
 
-        // حفظ آخر زاويتين للعرض
         if (index === 0) lastAngleRed = angle;
         if (index === 1) lastAngleBlue = angle;
       });
     });
 
-    // تحديث عرض الزوايا
     angleRedDisplay.textContent = (lastAngleRed * 180 / Math.PI % 360).toFixed(2);
     angleBlueDisplay.textContent = (lastAngleBlue * 180 / Math.PI % 360).toFixed(2);
 
