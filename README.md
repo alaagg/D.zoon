@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>أثر دائم لكل مرور فوق نقطة</title>
+  <title>حلزون ضمن الشاشة + أثر دائم</title>
   <style>
     body { margin: 0; background: black; overflow: hidden; }
     canvas { display: block; margin: auto; background: black; }
@@ -25,6 +25,10 @@ const ctx = canvas.getContext("2d");
 let w = canvas.width = window.innerWidth;
 let h = canvas.height = window.innerHeight;
 const cx = w / 2, cy = h / 2;
+
+// التعديل: مقياس يتناسب مع حجم الشاشة
+const minScreenSize = Math.min(w, h);
+const scale = minScreenSize / 2000; // كلما زاد المقام صغرت الدائرة
 
 function isA(n) {
   if (n < 2) return false;
@@ -51,7 +55,7 @@ toggleBtn.onclick = () => {
   if (running) draw();
 };
 
-// مصفوفة الأثر: تحفظ عدد مرات مرور كل نقطة تقريبًا
+// الأثر المتراكم
 const memory = {};
 
 function draw() {
@@ -60,7 +64,7 @@ function draw() {
   t += speed;
 
   aNumbers.forEach(i => {
-    const r = i * 0.5;
+    const r = i * scale * 100; // تعديل الحجم حسب الشاشة
     const angle1 = i * 0.1 + t;
     const angle2 = i * 0.1 - t;
 
@@ -69,7 +73,6 @@ function draw() {
     const x2 = cx + r * Math.cos(angle2);
     const y2 = cy + r * Math.sin(angle2);
 
-    // نرسم كل نقطة بحجم 3 بكسل
     drawAndRecord(x1, y1);
     drawAndRecord(x2, y2);
   });
@@ -84,7 +87,7 @@ function drawAndRecord(x, y) {
 
   ctx.fillStyle = `rgba(255,255,255,${alpha})`;
   ctx.beginPath();
-  ctx.arc(x, y, 1.5, 0, Math.PI * 2); // نصف القطر 1.5 = قطر 3 بكسل
+  ctx.arc(x, y, 1.5, 0, Math.PI * 2); // قطر 3 بكسل
   ctx.fill();
 }
 
