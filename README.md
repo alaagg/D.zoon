@@ -2,77 +2,74 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Alaa's Wave Equation for Zeta Zeros</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Alaa's Final Tuned Wave Equation</title>
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <style>
     body {
       background-color: #121212;
       color: #f1f1f1;
-      font-family: 'Segoe UI', sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       padding: 40px;
+      line-height: 1.6;
     }
     h1 {
       text-align: center;
       color: #00ffff;
+      margin-bottom: 1rem;
     }
-    .block {
+    .container {
       background: #1e1e1e;
       border-left: 4px solid #00ffff;
       padding: 20px;
-      margin-top: 30px;
-      line-height: 1.7;
+      max-width: 800px;
+      margin: 0 auto 2rem auto;
+      border-radius: 6px;
     }
     code {
       background-color: #222;
       padding: 4px 8px;
       font-family: monospace;
       color: #0f0;
+      border-radius: 3px;
+    }
+    ul {
+      margin-top: 0;
     }
   </style>
 </head>
 <body>
-  <h1>Alaa's Final Wave Equation for Zeta Zeros</h1>
+  <h1>Alaa's Final Tuned Wave Equation for Zeta Zeros</h1>
 
-  <div class="block">
-    <h2>📐 Equation:</h2>
+  <div class="container">
+    <h2>📐 Final Equation:</h2>
     <p>
 \[
-      s = \frac{1}{2} + i \cdot \left( \frac{2 \pi k - t - \alpha \cdot \sin(\beta t) - \gamma \cdot \ln(A + 1) + \arcsin\left( \frac{\theta}{A} \right)}{f} \right)
+      s(A) = \frac{1}{2} + i \cdot \left( \frac{
+      2\pi k - 11.37 - \alpha \cdot \sin\big(\beta (11.37 + \lambda_1 \ln A)\big)
+      - \gamma \cdot \ln(A + 1)
+      + \arcsin\left(\frac{\theta}{A}\right)
+      }{f} \right)
 \]
     </p>
   </div>
 
-  <div class="block">
-    <h2>🔢 Parameters:</h2>
+  <div class="container">
+    <h2>⚙️ Constants:</h2>
     <ul>
-      <li><code>A</code>: A large A-number (e.g., a prime)</li>
-      <li><code>t</code>: Tuned time-phase value</li>
-      <li><code>k = 1</code></li>
-      <li><code>alpha = 0.8</code></li>
-      <li><code>beta = 0.9</code></li>
-      <li><code>gamma = 1.1</code></li>
-      <li><code>theta = 0.7</code></li>
-      <li><code>f = 1.2</code></li>
+      <li><code>t_0 = 11.37</code> (Phase offset, tuned at first zero)</li>
+      <li><code>\lambda_1</code>: Logarithmic scaling coefficient (to be tuned)</li>
+      <li><code>k, \alpha, \beta, \gamma, \theta, f</code>: Wave parameters</li>
+      <li><code>A</code>: Large A-number (e.g., prime)</li>
     </ul>
   </div>
 
-  <div class="block">
-    <h2>🔁 Tuning Algorithm:</h2>
-    <p>
-\[
-      t_{\text{next}} = t \pm \lambda \cdot \left| \text{Zeta}_{\text{true}} - \Im(s) \right| \quad \text{with} \quad \lambda = 0.5
-\]
-    </p>
-    <p>Repeat until the error is minimal (&lt; 0.005%)</p>
+  <div class="container">
+    <h2>📊 Description:</h2>
+    <p>This equation represents a self-tuning wave model generating non-trivial zeros of the Riemann Zeta function, starting from a precisely tuned initial phase <code>t_0</code>.</p>
+    <p><strong>Developed by: Alaa</strong> — <em>2025-06-30</em></p>
   </div>
-
-  <div class="block">
-    <h2>📊 Conclusion:</h2>
-    <p>This equation dynamically generates highly accurate non-trivial zeros of the Riemann Zeta Function on the critical line using wave principles and A-number indexing.</p>
-    <p><strong>Developed by: Alaa</strong></p>
-  </div>
-
 </body>
 </html>
