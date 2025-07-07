@@ -1,79 +1,63 @@
-Spectral Logic SAT Approximation Algorithm
-
-Author: Alaa Sheikh Albasatneh
-Date: July 2025
-
-
----
-
-Title: Spectral Logic SAT Approximation Algorithm
-
-
----
-
-Inputs:
-
-Integer n: number of Boolean variables
-
-Clause list C = {C1, C2, ..., Ck}: each clause contains literals (variables or their negations)
-
-
-Output:
-
-Logical assignment A = {x1, x2, ..., xn} that satisfies the maximum number of clauses
-
-
-
----
-
-Steps:
-
-1. Initialize an empty assignment A with n variables, each set initially to 0
-
-
-2. For each variable x_i from 1 to n: a. Analyze its impact across all clauses:
-
-Count how many clauses would be satisfied if x_i = 1
-
-Count how many clauses would be satisfied if x_i = 0 b. Compute the spectral purity score: Purity(x_i) = (#clauses helped if 1) - (#clauses harmed if 1) c. Choose the value (0 or 1) that gives the higher purity d. Assign that value to x_i
-
-
-
-3. Once all variables are assigned, evaluate all clauses C
-
-
-4. If some clauses are still unsatisfied:
-
-Apply correction: identify variables with the most negative spectral impact (via heatmap)
-
-Flip their values one by one and re-evaluate
-
-
-
-5. Return the final corrected assignment A
-
-
-
-
----
-
-Complexity (approximate):
-
-Time: O(n × m) where:
-
-n = number of variables
-
-m = number of clauses
-
-
-
-
----
-
-Description: This algorithm uses a novel spectral-logic approach to solve SAT problems. Rather than brute-forcing every combination, it calculates the spectral influence of each variable across the clause set, and greedily assigns values to maximize clause satisfaction. Corrections can be made using spectral heatmaps which visually highlight destructive variables. The algorithm is scalable and performs well on large-scale Boolean problems.
-
-
----
-
-Note: This formulation is suitable for academic publishing, algorithm comparison, and practical implementations in symbolic AI or NP research.
-
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Critical Phase Equation</title>
+  <!-- Load MathJax for rendering LaTeX equations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js" integrity="sha512-R1LPBYlliFz+lznwOHzgB5ZnNtJb1kz/8voD+IsWlMHuwJKou5DFZ7AmZ7UmsidLMsjw0qa+U+TlR5a5BMpu9w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 2rem; line-height: 1.6; }
+    h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+    .meta { font-size: 0.9rem; color: #555; margin-bottom: 1.5rem; }
+    .equation { margin: 1rem 0; }
+    code { background-color: #f4f4f4; padding: 0.2rem 0.4rem; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <h1>Critical Phase Equation</h1>
+  <p class="meta"><strong>Author:</strong> Alaa Sheikh Albasatneh (Syrian)<br>
+  <strong>Date:</strong> July 7, 2025</p>
+  <p>The complete formulation for the critical phase root <code>s_k</code> on the critical line:</p>
+  <div class="equation">
+\[
+    C = \ln(10^6) + \ln(10^6+1) - \arcsin\left(10^{-6}\right)
+\]
+  </div>
+  <div class="equation">
+\[
+    \{\alpha_i\}_{i=0}^7 = (252.0678847,\,-583.7649719,\,537.6509922,\,-256.2217581,\,67.7865404,\,-10.0645318,\,0.7838493,\,-0.02489716)
+\]
+  </div>
+  <div class="equation">
+\[
+    R(k) = \sum_{i=0}^7 \alpha_i\,k^i
+\]
+  </div>
+  <div class="equation">
+\[
+    f_k(t) = -t + \sin t - 2\pi k + C - R(k) = 0
+\]
+  </div>
+  <div class="equation">
+\[
+    f_k'(t) = -1 + \cos t
+\]
+  </div>
+  <div class="equation">
+\[
+    t_0 = C - R(k) - 2\pi k
+\]
+  </div>
+  <div class="equation">
+\[
+    t_{n+1} = t_n - \lambda \frac{f_k(t_n)}{f_k'(t_n)}, \quad 0<\lambda\le1
+\]
+  </div>
+  <div class="equation">
+\[
+    s_k = \frac12 + i\,t_k
+\]
+  </div>
+  <p>You can implement the Newton–Raphson iteration in JavaScript or any other language by following these formulas.</p>
+</body>
+</html>
