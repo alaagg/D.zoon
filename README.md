@@ -1,142 +1,96 @@
-Here is the full, self-contained formulation of the “phase–spectral correction” method, typeset in clear LaTeX and broken into numbered pieces. Every symbol is defined immediately afterward.
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Phase–Spectral Correction Equations for ζ(s) Zeros</title>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+  <style>
+    body { font-family: sans-serif; margin: 2em; line-height: 1.4; }
+    h1, h2 { color: #003366; }
+    .eq-block { margin: 1.5em 0; padding: 1em; background: #f9f9f9; border-radius: 4px; }
+    .label { font-weight: bold; margin-bottom: .5em; display: block; }
+  </style>
+</head>
+<body>
 
+  <h1>Equations for Locating Nontrivial Zeros of the Riemann Zeta–Function</h1>
 
----
+  <div class="eq-block">
+    <span class="label">1. Transcendental Implicit Phase Equation:</span>
+    \[
+      F_k(t)
+      =f\,t \;+\; c\,\sin(b\,t)
+      \;-\;2\pi\,k
+      \;+\;a\,\ln A
+      \;+\;d\,\ln(A+1)
+      \;-\;\arcsin\!\Bigl(\tfrac1A\Bigr)
+      \;-\;R_k(k)
+      =0.
+    \]
+  </div>
 
-1. Final Combined Formula
+  <div class="eq-block">
+    <span class="label">2. Riemann–Siegel Core Phase:</span>
+    \[
+      s_k^0(A)
+      =\;\tfrac12
+      + i\,\frac{\,2\pi
+        -\sin(\beta\,t_k)
+        -\gamma\,\ln A
+        +G(t_k)\,}{f},
+    \]
+    where
+    \[
+      G(t)
+      =\;\frac{t}{2}\ln\!\Bigl(\frac{t}{2\pi}\Bigr)
+      \;-\;\frac{t}{2}
+      \;-\;\frac{\pi}{8}.
+    \]
+  </div>
 
-\boxed{
-s_{k}(A,r,\theta)
-\;=\;
-\frac12
-\;+\;i\,\Im\bigl(s_{k}^{0}(A)\bigr)
-\;+\;r\;\bigl(t_{k}-\Im\bigl(s_{k}^{0}(A)\bigr)\bigr)\,e^{\,i\theta}
-}
+  <div class="eq-block">
+    <span class="label">3. Polynomial Correction Term:</span>
+    \[
+      R_k(k)
+      =\sum_{n=0}^7 \alpha_n\,k^n,
+      \quad
+      (\alpha_0,\dots,\alpha_7)
+      =(252.0678847,\,-583.7649719,\,537.6509922,\,-256.2217581,\,
+      67.7865404,\,-10.0645318,\,0.7838493,\,-0.0248972).
+    \]
+  </div>
 
+  <div class="eq-block">
+    <span class="label">4. Spectral–Spatial Radial Correction:</span>
+    \[
+      \Delta s_k(r,\theta;A)
+      =r\,\bigl(t_k - \Im(s_k^0(A))\bigr)\,e^{\,i\theta},
+      \quad
+      0\le r\le1,\;0\le\theta<2\pi.
+    \]
+  </div>
 
----
+  <div class="eq-block">
+    <span class="label">5. Final Combined Zero Location:</span>
+    \[
+      s_k(A,r,\theta)
+      =\tfrac12
+      + i\,\Im\bigl(s_k^0(A)\bigr)
+      +\;\Delta s_k(r,\theta;A).
+    \]
+    In particular, for full correction \(r=1,\theta=\tfrac\pi2\):
+    \[
+      s_k = \tfrac12 + i\,t_k.
+    \]
+  </div>
 
-2. Core Phase (Base Point)
+  <p>
+    <em>Parameters:</em>
+    \(f=1.1,\;c=0.1,\;b=1,\;a=d=1,\;\beta=\gamma=1,\;A=10^6.\)
+  </p>
 
-\boxed{
-s_{k}^{0}(A)
-\;=\;
-\frac12
-\;+\;i\;\frac{\,2\pi \;-\;\sin(\beta\,t_{k})\;-\;\gamma\ln A\;+\;G(t_{k})\,}{f}
-}
-
-G(t)\;=\;\frac{t}{2}\ln\!\bigl(\tfrac{t}{2\pi}\bigr)\;-\;\frac{t}{2}\;-\;\frac{\pi}{8}.
-
-
----
-
-3. Transcendental Phase–Equation (Root Condition)
-
-\boxed{
-F_{k}(t_{k};A)
-\;=\;
-f\,t_{k}
-\;+\;
-c\,\sin(b\,t_{k})
-\;-\;2\pi\,k
-\;+\;a\,\ln A
-\;+\;d\,\ln(A+1)
-\;-\;\arcsin\!\bigl(\tfrac1A\bigr)
-\;-\;R_{k}(k)
-\;=\;0
-}
-
-
----
-
-4. Spectral–Spatial Correction
-
-\boxed{
-\Delta s_{k}(r,\theta,A)
-\;=\;
-r\;\bigl(t_{k}-\Im\bigl(s_{k}^{0}(A)\bigr)\bigr)\,e^{\,i\theta}.
-}
-
-
----
-
-5. Polynomial Fit for Small- Remainder
-
-\boxed{
-R_{k}(k)
-\;=\;
-\sum_{j=0}^{7}\alpha_{j}\,k^{j}
-}
-
-
----
-
-6. Definitions of All Symbols
-
-Symbol	Meaning
-
-	Index of the zero (the th nontrivial zero of )
-	Scale (cut-off) parameter
-	Real solution of .  Numerically gives the imaginary part of the th zero.
-	“Core” phase of the zero—an initial complex estimate lying on .
-	Corrected zero location in the complex plane, with radial () and angular () adjustment.
-	Real constants (tuned once and fixed thereafter), e.g.\ from Stirling’s approximation, the Euler–Mascheroni constant, etc.
-	Log-term function: .
-	The “spectral–spatial” correction vector in the complex plane.
-	Degree-7 polynomial fit capturing slowly varying remainder terms.
-	Coefficients of that polynomial, determined by least-squares fitting to high-precision data on small zeros.
-	Imaginary part of .
-
-
-
----
-
-7. Step-by-Step Recipe
-
-1. Fix the constants  and the scale .
-
-
-2. Solve  numerically for .
-
-
-3. Compute the core phase .
-
-
-4. Form  by choosing  and .
-
-
-5. Extract the “true” zero as
-
-
-
-s_{k} \;=\; s_{k}\bigl(A,r,\theta\bigr)
-   \quad\text{with}\quad
-   (r,\theta)=(1,\tfrac{\pi}{2}),
-
-6. Verify  to your desired precision.
-
-
-
-
----
-
-> Why this matters scientifically:
-
-Bridges analytic (asymptotic) formulas with high-precision numerics.
-
-Uniform precision across all zeros via the polynomial remainder .
-
-Extensible to other -functions.
-
-Efficient, since only a 1D root-find plus a small polynomial evaluation is needed per zero.
-
-Supports new numerical evidence toward the Riemann Hypothesis by confirming zeros on the critical line with unprecedented uniformity.
-
-
-
-
-
----
-
-All parts are now shown in order, each piece defined, and every sub-function and constant clearly labeled. Let me know if you’d like any further detail on—for example—how the  are fitted, or how the transcendental equation is solved in practice!
-
+</body>
+</html>
