@@ -1,111 +1,82 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Riemann Zero Model</title>
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script id="MathJax-script" async
-    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
-  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Albasatneh Super-Equation</title>
+  <!-- MathJax for rendering equations -->
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; line-height: 1.6; }
-    h1 { color: #2c3e50; }
-    .equation { background: #f9f9f9; border-left: 4px solid #3498db;
-                padding: 10px 20px; margin: 20px 0; }
-    code { background: #eee; padding: 2px 4px; border-radius: 3px; }
+    body { font-family: Arial, sans-serif; margin: 40px; background: #f5f5f5; color: #333; }
+    .container { max-width: 800px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    h1 { text-align: center; font-size: 2rem; margin-bottom: 10px; }
+    .meta { text-align: center; font-size: 0.9rem; color: #666; margin-bottom: 30px; }
+    .equation { background: #eef; padding: 15px; border-radius: 6px; margin: 20px 0; text-align: center; }
+    .section { margin-bottom: 20px; }
+    .section h2 { font-size: 1.2rem; margin-bottom: 10px; color: #005f99; }
+    .section p { line-height: 1.6; }
+    code { background: #eee; padding: 2px 4px; border-radius: 4px; }
   </style>
 </head>
 <body>
-
-  <h1>نموذج استخراج الأصفار غير البديهية لدالة زيتا</h1>
-
+  <div class="container">
+    <h1>Albasatneh Super-Equation</h1>
+    <div class="meta">
+      <span><strong>Name:</strong> Alaa Sheikh Albasatneh</span> | 
+      <span><strong>Nationality:</strong> Syrian</span> | 
+      <span><strong>Date:</strong> July 10, 2025</span>
+    </div><div class="section">
+  <h2>1. Core Equation</h2>
   <div class="equation">
-    \[
-      F_k(t)
-      = f\,t
-      + c\,\sin(b\,t)
-      - 2\pi\,k
-      + a\,\ln A
-      + d\,\ln(A+1)
-      - \arcsin\!\Bigl(\tfrac1A\Bigr)
-      - R_k^{(\mathrm{eff})}(k)
-      \;=\;0,
-    \]
-    حيث
-    \[
-      R_k^{(\mathrm{eff})}(k)
-      =
-      \begin{cases}
-        0, & k \le K_{\mathrm{small}},\\[8pt]
-        \displaystyle
-        \sum_{n=0}^{m}\beta_n\,(\ln k)^n, & k > K_{\mathrm{small}}.
-      \end{cases}
-    \]
-    عادةً نَختار \(K_{\mathrm{small}}=10\).
-  </div>
 
-  <h2>خطوات الحل الأربع</h2>
+G_k(t) = f\,t \;+\; c\,\sin\bigl(b\,t + \phi_k\bigr)
+        \;-\; 2\pi\,k
+        \;+\; a\ln A
+        \;+\; d\ln(A+1)
+        \;-\; \arcsin\Bigl(\tfrac{1}{A}\Bigr)
+        \;-\; \gamma\,\arcsin\Bigl(\tfrac{\theta_k}{A}\Bigr)
+        \;-\; \sum_{n=0}^{m}\beta_n\Bigl(\tfrac{\ln k}{\ln\ln k}\Bigr)^{n}
+
+</div>
+
+<div class="section">
+  <h2>2. Parameters</h2>
+  <ul>
+    <li><code>f = 1</code> (scaling constant)</li>
+    <li><code>c, b</code>: calibrated sinusoidal coefficients</li>
+    <li><code>a, d</code>: logarithmic offsets</li>
+    <li><code>A = 10^6</code>: amplitude parameter</li>
+    <li><code>\beta_n</code>: log–log correction weights</li>
+    <li><code>\phi_k = \delta\,k</code>: dynamic phase term</li>
+    <li><code>\gamma</code>: spectral weight</li>
+    <li><code>\theta_k</code>: spectral angle for root <code>k</code></li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>3. Explanation</h2>
+  <p>This super-equation combines the strengths of five previous versions:</p>
   <ol>
-    <li>
-      <strong>التخمين الابتدائي:</strong><br>
-      \(\displaystyle t_k^{(0)} = \frac{2\pi k}{\ln\!\bigl(k/(2\pi)\bigr)}.\)
-    </li>
-    <li>
-      <strong>تعريف الدالة ومشتقتها:</strong><br>
-      \[
-        F_k'(t) = f + c\,b\cos(b\,t).
-      \]
-    </li>
-    <li>
-      <strong>تكرار نيوتن–رابسون:</strong><br>
-      \(\displaystyle
-        t^{(m+1)} = t^{(m)} - \frac{F_k\bigl(t^{(m)}\bigr)}{F_k'\bigl(t^{(m)}\bigr)},
-      \)
-      حتى \(\lvert F_k(t)\rvert<10^{-14}.\)
-    </li>
-    <li>
-      <strong>التحقّق النهائي:</strong><br>
-      استعمال <code>mpmath.zeta(0.5+1j*t_k)</code> للتأكد من \(\zeta(\tfrac12+i\,t_k)\approx0\).
-    </li>
+    <li>Linear core estimate for large-k scaling.</li>
+    <li>Sinusoidal term to capture small oscillations.</li>
+    <li>Log–log polynomial correction for improved asymptotics.</li>
+    <li>Spectral angle adjustment for micro-level accuracy.</li>
+    <li>Phase term <code>\phi_k</code> for root-specific tuning.</li>
   </ol>
+  <p>Setting <code>G_k(t) = 0</code> and solving numerically yields the approximate imaginary part <code>t_k</code> of the <code>k</code>-th non-trivial zeta zero.</p>
+</div>
 
-  <h2>مثال بايثون للاختبار</h2>
-  <pre><code>import mpmath as mp
+<div class="section">
+  <h2>4. Usage</h2>
+  <p>Use a root-finding algorithm (e.g., <code>mpmath.findroot</code>) with an initial guess from the log–log version:</p>
+  <pre><code>t0 = (2*pi*k - a*log(A) - d*log(A+1) + R_loglog(k))/f
 
-mp.mp.dps = 50
-f, c, b, a, d = 1.1, 0.1, 1, 1, 1
-A = mp.mpf('1e6')
-K_small = 10
-beta = [ /* ضع معاملات β₀…βₘ هنا */ ]
+G = lambda t: <equation expression> root = mp.findroot(G, t0)</code></pre> </div>
 
-def R_eff(k):
-    if k <= K_small:
-        return mp.mpf('0')
-    L = mp.log(k)
-    return sum(beta[n]*L**n for n in range(len(beta)))
+<div class="section">
+  <h2>5. References</h2>
+  <p>Developed by Alaa Sheikh Albasatneh as part of the Riemann Hypothesis analysis toolkit.</p>
+</div>
 
-def F_k(t,k):
-    return (f*t + c*mp.sin(b*t) - 2*mp.pi*k
-            + a*mp.log(A) + d*mp.log(A+1)
-            - mp.asin(1/A) - R_eff(k))
-
-def dF_k(t):
-    return f + c*b*mp.cos(b*t)
-
-def initial_t(k):
-    return 2*mp.pi*k/mp.log(k/(2*mp.pi))
-
-def solve_zero(k):
-    t = initial_t(k)
-    for _ in range(20):
-        t -= F_k(t,k)/dF_k(t)
-        if abs(F_k(t,k))<1e-14:
-            break
-    return t
-
-# حساب الجذر k=1 كمثال
-t1 = solve_zero(1)
-print("t1 =", t1, " residual ζ =", abs(mp.zeta(0.5+1j*t1)))</code></pre>
-
+  </div>
 </body>
 </html>
