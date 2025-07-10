@@ -3,7 +3,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Albasatneh Super-Equation</title>
-  <!-- MathJax for rendering equations -->
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
   <style>
     body { font-family: Georgia, serif; margin: 40px; background: #fdfdfd; color: #111; }
@@ -15,6 +14,8 @@
     .section h2 { font-size: 1.1rem; margin-bottom: 10px; color: #003366; border-bottom: 1px solid #ddd; padding-bottom: 5px; }
     .definitions { font-size: 1rem; line-height: 1.6; padding-left: 10px; }
     .signature { margin-top: 40px; text-align: center; font-weight: bold; font-size: 1.1rem; text-transform: uppercase; }
+    .image-block { text-align: center; margin: 30px 0; }
+    .image-block img { max-width: 100%; border: 2px solid #222; border-radius: 4px; }
   </style>
 </head>
 <body>
@@ -34,6 +35,22 @@ t_k = \frac{2\pi k + \displaystyle\sum_{n=0}^{m} \beta_n \left( \frac{\ln k}{\ln
     f = frequency correction factor<br>
     \beta_n = log–log correction coefficients
   </div>
+</div>
+
+<div class="image-block">
+  <img src="https://chat.openai.com/share/8aa3069e-06b5-4f0a-8b52-5f59b1b1f6d6" alt="Albasatneh Equation Image">
+</div>
+
+<div class="section">
+  <h2>Explanation of the Image</h2>
+  <p>
+    The image above presents the Albasatneh Equation in a formal poster-style layout. The equation expresses the imaginary part t_k
+    of the <strong>k-th nontrivial zero</strong> of the Riemann zeta function using a log–log polynomial correction model.
+  </p>
+  <p>
+    The variables are defined below the equation in the image itself. This poster-style format is useful for visual presentations,
+    academic posters, and explanatory diagrams.
+  </p>
 </div>
 
 <div class="signature">
