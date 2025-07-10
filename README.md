@@ -1,56 +1,82 @@
-import mpmath as mp
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Albasatneh Super-Equation</title>
+  <!-- MathJax for rendering equations -->
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; background: #f5f5f5; color: #333; }
+    .container { max-width: 800px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    h1 { text-align: center; font-size: 2rem; margin-bottom: 10px; }
+    .meta { text-align: center; font-size: 0.9rem; color: #666; margin-bottom: 30px; }
+    .equation { background: #eef; padding: 15px; border-radius: 6px; margin: 20px 0; text-align: center; }
+    .section { margin-bottom: 20px; }
+    .section h2 { font-size: 1.2rem; margin-bottom: 10px; color: #005f99; }
+    .section p { line-height: 1.6; }
+    code { background: #eee; padding: 2px 4px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Albasatneh Super-Equation</h1>
+    <div class="meta">
+      <span><strong>Name:</strong> Alaa Sheikh Albasatneh</span> | 
+      <span><strong>Nationality:</strong> Syrian</span> | 
+      <span><strong>Date:</strong> July 10, 2025</span>
+    </div><div class="section">
+  <h2>1. Core Equation</h2>
+  <div class="equation">
 
-# Set high precision
-mp.dps = 50
+G_k(t) = f\,t \;+\; c\,\sin\bigl(b\,t + \phi_k\bigr)
+        \;-\; 2\pi\,k
+        \;+\; a\ln A
+        \;+\; d\ln(A+1)
+        \;-\; \arcsin\Bigl(\tfrac{1}{A}\Bigr)
+        \;-\; \gamma\,\arcsin\Bigl(\tfrac{\theta_k}{A}\Bigr)
+        \;-\; \sum_{n=0}^{m}\beta_n\Bigl(\tfrac{\ln k}{\ln\ln k}\Bigr)^{n}
 
-# Constants
-f = mp.mpf("1.0")
-c = mp.mpf("0.844327")
-b = mp.mpf("0.851884")
-a = mp.mpf("0.190863")
-d = mp.mpf("0.190859")
-A = mp.mpf("1e6")
-delta = mp.mpf("0.13")      # Optimized phase shift
-gamma = mp.mpf("1.0")       # Spectral weight
+</div>
 
-# Log–log correction coefficients
-betas = [
-    mp.mpf("0.857133"),
-    mp.mpf("-7.567221"),
-    mp.mpf("-2.050830"),
-    mp.mpf("0.413348"),
-    mp.mpf("-0.074889")
-]
+<div class="section">
+  <h2>2. Parameters</h2>
+  <ul>
+    <li><code>f = 1</code> (scaling constant)</li>
+    <li><code>c, b</code>: calibrated sinusoidal coefficients</li>
+    <li><code>a, d</code>: logarithmic offsets</li>
+    <li><code>A = 10^6</code>: amplitude parameter</li>
+    <li><code>\beta_n</code>: log–log correction weights</li>
+    <li><code>\phi_k = \delta\,k</code>: dynamic phase term</li>
+    <li><code>\gamma</code>: spectral weight</li>
+    <li><code>\theta_k</code>: spectral angle for root <code>k</code></li>
+  </ul>
+</div>
 
-def R_loglog(k):
-    """Log–log polynomial correction."""
-    x = mp.log(k) / mp.log(mp.log(k))
-    return sum(beta * x**n for n, beta in enumerate(betas))
+<div class="section">
+  <h2>3. Explanation</h2>
+  <p>This super-equation combines the strengths of five previous versions:</p>
+  <ol>
+    <li>Linear core estimate for large-k scaling.</li>
+    <li>Sinusoidal term to capture small oscillations.</li>
+    <li>Log–log polynomial correction for improved asymptotics.</li>
+    <li>Spectral angle adjustment for micro-level accuracy.</li>
+    <li>Phase term <code>\phi_k</code> for root-specific tuning.</li>
+  </ol>
+  <p>Setting <code>G_k(t) = 0</code> and solving numerically yields the approximate imaginary part <code>t_k</code> of the <code>k</code>-th non-trivial zeta zero.</p>
+</div>
 
-def theta_k_estimate(k):
-    """Estimate the spectral angle theta_k for root k."""
-    t_approx = (2 * mp.pi * k - a * mp.log(A) - d * mp.log(A + 1) + R_loglog(k)) / f
-    return mp.atan2(t_approx, mp.mpf("0.5"))
+<div class="section">
+  <h2>4. Usage</h2>
+  <p>Use a root-finding algorithm (e.g., <code>mpmath.findroot</code>) with an initial guess from the log–log version:</p>
+  <pre><code>t0 = (2*pi*k - a*log(A) - d*log(A+1) + R_loglog(k))/f
 
-def Gk(t, k):
-    """Albasatneh Super-Equation G_k(t)."""
-    phi_k = delta * k
-    theta = theta_k_estimate(k)
-    return (f * t
-            + c * mp.sin(b * t + phi_k)
-            - 2 * mp.pi * k
-            + a * mp.log(A)
-            + d * mp.log(A + 1)
-            - mp.asin(1 / A)
-            - gamma * mp.asin(theta / A)
-            - R_loglog(k))
+G = lambda t: <equation expression> root = mp.findroot(G, t0)</code></pre> </div>
 
-def compute_root(k):
-    """Solve G_k(t) = 0 numerically."""
-    t0 = (2 * mp.pi * k - a * mp.log(A) - d * mp.log(A + 1) + R_loglog(k)) / f
-    return mp.findroot(lambda t: Gk(t, k), t0)
+<div class="section">
+  <h2>5. References</h2>
+  <p>Developed by Alaa Sheikh Albasatneh as part of the Riemann Hypothesis analysis toolkit.</p>
+</div>
 
-# Example: compute the 1st non-trivial zero
-k = 1
-t_k = compute_root(k)
-print(f"Approximate zero t_{k} ≈ {t_k}")
+  </div>
+</body>
+</html>
