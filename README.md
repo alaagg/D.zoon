@@ -1,62 +1,76 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Albasatneh Super-Equation</title>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+  <title>Albasatneh RH Equation</title>
+  <script type="text/javascript" id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
   <style>
-    body { font-family: Georgia, serif; margin: 40px; background: #fdfdfd; color: #111; }
-    .container { max-width: 800px; margin: auto; background: #fff; padding: 30px; border: 2px solid #222; border-radius: 8px; box-shadow: 0 2px 12px rgba(0,0,0,0.1); }
-    h1 { text-align: center; font-size: 1.8rem; text-transform: uppercase; margin-bottom: 20px; }
-    .meta { text-align: center; font-size: 0.9rem; color: #666; margin-bottom: 30px; }
-    .equation-block { background: #f8f8f8; padding: 20px; border-radius: 6px; border: 1px solid #ccc; text-align: center; margin-bottom: 30px; }
-    .section { margin-bottom: 20px; }
-    .section h2 { font-size: 1.1rem; margin-bottom: 10px; color: #003366; border-bottom: 1px solid #ddd; padding-bottom: 5px; }
-    .definitions { font-size: 1rem; line-height: 1.6; padding-left: 10px; }
-    .signature { margin-top: 40px; text-align: center; font-weight: bold; font-size: 1.1rem; text-transform: uppercase; }
-    .image-block { text-align: center; margin: 30px 0; }
-    .image-block img { max-width: 100%; border: 2px solid #222; border-radius: 4px; }
+    body {
+      font-family: Georgia, serif;
+      padding: 30px;
+      background-color: #f9f9f9;
+      color: #111;
+    }
+    .card {
+      background: white;
+      border: 2px solid #000;
+      border-radius: 12px;
+      padding: 20px;
+      max-width: 700px;
+      margin: auto;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+      text-transform: uppercase;
+      font-size: 1.6em;
+      margin-bottom: 20px;
+    }
+    .meta {
+      text-align: center;
+      font-size: 0.9em;
+      margin-bottom: 30px;
+      color: #444;
+    }
+    .equation {
+      font-size: 1.5em;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .definitions {
+      font-size: 1em;
+      margin-left: 30px;
+      line-height: 1.6;
+    }
+    .signature {
+      text-align: center;
+      font-weight: bold;
+      margin-top: 30px;
+      font-size: 1.1em;
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Alaa Sheikh Albasatneh<br>Equation for RH Zeros</h1>
-    <div class="meta">
-      <strong>Name:</strong> Alaa Sheikh Albasatneh &nbsp; | &nbsp; <strong>Nationality:</strong> Syrian &nbsp; | &nbsp; <strong>Date:</strong> July 10, 2025
-    </div><div class="equation-block">
+  <div class="card">
+    <h1>ALAA SHEIKH ALBASATNEH<br>Equation for RH Zeros</h1>
+    <div class="meta">Name: Alaa Sheikh Albasatneh | Nationality: Syrian | Date: July 10, 2025</div>
 
-t_k = \frac{2\pi k + \displaystyle\sum_{n=0}^{m} \beta_n \left( \frac{\ln k}{\ln \ln k} \right)^n}{f}
+    <div class="equation">
+      $$
+      t_k = \frac{2\pi k + \sum_{n=0}^{m} \beta_n \left( \frac{\ln k}{\ln \ln k} \right)^n}{f}
+      $$
+    </div>
 
-<div class="section">
-  <h2>Definitions</h2>
-  <div class="definitions">
-    t_k = nontrivial zero of the Riemann zeta function<br>
-    k = zero number<br>
-    f = frequency correction factor<br>
-    \beta_n = log–log correction coefficients
-  </div>
-</div>
+    <div class="definitions">
+      \( t_k \) = nontrivial zero of the Riemann zeta function<br>
+      \( k \) = zero number<br>
+      \( f \) = frequency correction factor<br>
+      \( \beta_n \) = log–log correction coefficients
+    </div>
 
-<div class="image-block">
-  <img src="https://chat.openai.com/share/8aa3069e-06b5-4f0a-8b52-5f59b1b1f6d6" alt="Albasatneh Equation Image">
-</div>
-
-<div class="section">
-  <h2>Explanation of the Image</h2>
-  <p>
-    The image above presents the Albasatneh Equation in a formal poster-style layout. The equation expresses the imaginary part t_k
-    of the <strong>k-th nontrivial zero</strong> of the Riemann zeta function using a log–log polynomial correction model.
-  </p>
-  <p>
-    The variables are defined below the equation in the image itself. This poster-style format is useful for visual presentations,
-    academic posters, and explanatory diagrams.
-  </p>
-</div>
-
-<div class="signature">
-  ALAA SHEIKH ALBASATNEH
-</div>
-
+    <div class="signature">ALAA SHEIKH ALBASATNEH</div>
   </div>
 </body>
 </html>
