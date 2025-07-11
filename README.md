@@ -1,76 +1,134 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Albasatneh RH Equation – Zeta Root Generator</title>
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <title>Albasatneh RH Equation</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 2em; background: #f0f8ff; color: #222; }
-    h1, h2 { color: #003366; }
-    input, button { padding: 0.5em; font-size: 1em; margin-top: 1em; }
-    #output { margin-top: 2em; font-weight: bold; font-size: 1.2em; background: #eef; padding: 1em; border-radius: 6px; }
-    pre { background: #eee; padding: 1em; border-radius: 4px; overflow-x: auto; }
+    body {
+      background-color: black;
+      color: white;
+      font-family: 'Courier New', monospace;
+      padding: 30px;
+      line-height: 1.6;
+    }
+    h1, h2 {
+      color: #00ffff;
+    }
+    .section {
+      margin-bottom: 30px;
+    }
+    .code {
+      background-color: #111;
+      padding: 10px;
+      border-radius: 8px;
+      white-space: pre-wrap;
+      font-size: 16px;
+      color: #0f0;
+    }
+    input, button {
+      font-size: 18px;
+      padding: 10px;
+      border-radius: 6px;
+      border: none;
+      margin-top: 10px;
+      margin-right: 10px;
+    }
+    input {
+      width: 200px;
+    }
+    button {
+      background-color: #00ffff;
+      color: black;
+      cursor: pointer;
+    }
+    .output {
+      margin-top: 15px;
+      font-size: 18px;
+      color: #ff0;
+    }
   </style>
 </head>
 <body>
-  <h1>Albasatneh RH Equation</h1>
-  <p><strong>Purpose:</strong> Generate non-trivial zeros of the Riemann Zeta function using a closed-form log–log equation.</p>  <h2>Equation</h2>
-  <pre>
-  t_k = [ 2πk + C₀ + Σ(βₙ · (ln(k)/ln(ln(k)))ⁿ) ] / f
-  </pre>
-  <ul>
-    <li>C₀ = -6.180555</li>
-    <li>f = 1</li>
-    <li>β = [
-      0.774963,
-     -0.225223,
-      0.053304,
-     -0.010113,
-      0.001562,
-     -0.000200,
-      0.000020,
-     -0.000002,
-      0.0000001,
-      0.00000001
-    ]</li>
-  </ul>  <h2>Compute Root</h2>
-  <label for="kval">Enter k (positive integer):</label><br>
-  <input type="number" id="kval" value="1">
-  <button onclick="generateRoot()">Generate t_k</button>
-  <div id="output"></div>  <script>
-    function generateRoot() {
-      const k = parseInt(document.getElementById("kval").value);
-      if (k <= 0 || isNaN(k)) {
-        document.getElementById("output").innerText = "Please enter a valid positive integer.";
+  <h1>📘 Albasatneh RH Equation</h1>
+
+  <div class="section">
+    <strong>Presented by:</strong> Alaa Sheikh Albasatneh<br>
+    <strong>Nationality:</strong> Syrian<br>
+    <strong>Date:</strong> <span id="today-date"></span>
+  </div>
+
+  <div class="section">
+    <h2>🔷 Compute Root tₖ</h2>
+    <input type="number" id="k-input" placeholder="Enter k">
+    <button onclick="computeTk()">Compute tₖ</button>
+    <div class="output" id="tk-output"></div>
+  </div>
+
+  <div class="section">
+    <h2>🔷 Equation</h2>
+    <div class="code">
+      tₖ = [2πk + C₀ + ∑ βₙ (ln k / ln ln k)ⁿ] / f
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>🔷 Constants</h2>
+    <div class="code">
+      f = 1
+      C₀ = -6.180555
+      c = 0.844327
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>🔷 βₙ Coefficients</h2>
+    <div class="code">
+      β = [
+        +0.774963,
+        -0.225223,
+        +0.053304,
+        -0.010113,
+        +0.001562,
+        -0.000200,
+        +0.000020,
+        +0.000002,
+        +0.0000001,
+        +0.00000001
+      ]
+    </div>
+  </div>
+
+  <script>
+    // التاريخ الحالي
+    document.getElementById("today-date").innerText = new Date().toDateString();
+
+    // حساب t_k باستخدام المعادلة
+    function computeTk() {
+      const k = parseFloat(document.getElementById('k-input').value);
+      if (isNaN(k) || k <= 0) {
+        document.getElementById('tk-output').innerText = "⚠️ Please enter a valid k > 0";
         return;
       }
 
-      const C0 = -6.180555;
-      const f = 1.0;
+      const C_0 = -6.180555;
+      const f = 1;
       const beta = [
-        0.774963,
-       -0.225223,
-        0.053304,
-       -0.010113,
-        0.001562,
-       -0.000200,
-        0.000020,
-       -0.000002,
-        0.0000001,
-        0.00000001
+        0.774963, -0.225223, 0.053304, -0.010113, 0.001562,
+        -0.000200, 0.000020, 0.000002, 0.0000001, 0.00000001
       ];
 
       const ln_k = Math.log(k);
       const ln_ln_k = Math.log(ln_k);
       const x = ln_k / ln_ln_k;
 
-      let correction = 0;
+      let R_k = 0;
       for (let n = 0; n < beta.length; n++) {
-        correction += beta[n] * Math.pow(x, n);
+        R_k += beta[n] * Math.pow(x, n);
       }
 
-      const t_k = (2 * Math.PI * k + C0 + correction) / f;
-      document.getElementById("output").innerText = `t_${k} ≈ ${t_k}`;
+      const tk = (2 * Math.PI * k + C_0 + R_k) / f;
+      document.getElementById('tk-output').innerText = `tₖ ≈ ${tk}`;
     }
-  </script></body>
+  </script>
+</body>
 </html>
