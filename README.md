@@ -22,3 +22,55 @@
     <li>C₀ = -6.180555</li>
     <li>f = 1</li>
     <li>β = [
+      0.774963,
+     -0.225223,
+      0.053304,
+     -0.010113,
+      0.001562,
+     -0.000200,
+      0.000020,
+     -0.000002,
+      0.0000001,
+      0.00000001
+    ]</li>
+  </ul>  <h2>Compute Root</h2>
+  <label for="kval">Enter k (positive integer):</label><br>
+  <input type="number" id="kval" value="1">
+  <button onclick="generateRoot()">Generate t_k</button>
+  <div id="output"></div>  <script>
+    function generateRoot() {
+      const k = parseInt(document.getElementById("kval").value);
+      if (k <= 0 || isNaN(k)) {
+        document.getElementById("output").innerText = "Please enter a valid positive integer.";
+        return;
+      }
+
+      const C0 = -6.180555;
+      const f = 1.0;
+      const beta = [
+        0.774963,
+       -0.225223,
+        0.053304,
+       -0.010113,
+        0.001562,
+       -0.000200,
+        0.000020,
+       -0.000002,
+        0.0000001,
+        0.00000001
+      ];
+
+      const ln_k = Math.log(k);
+      const ln_ln_k = Math.log(ln_k);
+      const x = ln_k / ln_ln_k;
+
+      let correction = 0;
+      for (let n = 0; n < beta.length; n++) {
+        correction += beta[n] * Math.pow(x, n);
+      }
+
+      const t_k = (2 * Math.PI * k + C0 + correction) / f;
+      document.getElementById("output").innerText = `t_${k} ≈ ${t_k}`;
+    }
+  </script></body>
+</html>
