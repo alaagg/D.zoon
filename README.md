@@ -6,13 +6,15 @@ export default function ZetaZeroPage() { const [k, setK] = useState(1); const [z
 
 const ln = Math.log;
 
-function R_k_eff(k) { const x = ln(k) / ln(ln(k)); return beta.reduce((sum, b, n) => sum + b * Math.pow(x, n), 0); }
+function R_k_eff(k) { if (k <= 1 || ln(k) <= 0 || ln(ln(k)) <= 0) return 0; const x = ln(k) / ln(ln(k)); return beta.reduce((sum, b, n) => sum + b * Math.pow(x, n), 0); }
 
 function t_k(k) { return (2 * Math.PI * k + C_0 + R_k_eff(k)) / f; }
 
 function computeZero() { const kVal = parseInt(k); if (!isNaN(kVal) && kVal > 0) { const t = t_k(kVal); setZeros([...zeros, { real: 0.5, imag: t, k: kVal }]); } }
 
-return ( <div className="p-6 max-w-3xl mx-auto"> <h1 className="text-2xl font-bold mb-4">🎯 Albasatneh Zeta Zero Visualizer</h1> <div className="flex gap-2 mb-4"> <Input type="number" value={k} onChange={(e) => setK(e.target.value)} placeholder="أدخل رقم الجذر k" /> <Button onClick={computeZero}>احسب الصفر وأضف للرسم</Button> </div>
+const maxY = zeros.length > 0 ? Math.max(...zeros.map((z) => z.imag)) : 20;
+
+return ( <div className="p-6 max-w-3xl mx-auto"> <h1 className="text-2xl font-bold mb-4">🎯 Albasatneh Zeta Zero Visualizer</h1> <div className="flex gap-2 mb-4"> <Input type="number" value={k} onChange={(e) => setK(parseInt(e.target.value))} placeholder="أدخل رقم الجذر k" /> <Button onClick={computeZero}>احسب الصفر وأضف للرسم</Button> </div>
 
 <Plot
     data={[
@@ -27,7 +29,7 @@ return ( <div className="p-6 max-w-3xl mx-auto"> <h1 className="text-2xl font-bo
       },
       {
         x: [0.5, 0.5],
-        y: [0, Math.max(...zeros.map((z) => z.imag), 20)],
+        y: [0, maxY],
         type: "scatter",
         mode: "lines",
         line: { dash: "dash", color: "red" },
