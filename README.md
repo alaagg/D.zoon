@@ -2,132 +2,74 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Albasatneh RH Equation</title>
+  <title>Albasatneh – Zeta Zero Simulator</title>
   <style>
     body {
-      background-color: black;
-      color: white;
-      font-family: 'Courier New', monospace;
-      padding: 30px;
-      line-height: 1.6;
-    }
-    h1, h2 {
-      color: #00ffff;
-    }
-    .section {
-      margin-bottom: 30px;
-    }
-    .code {
       background-color: #111;
-      padding: 10px;
-      border-radius: 8px;
-      white-space: pre-wrap;
-      font-size: 16px;
-      color: #0f0;
+      color: #eee;
+      font-family: monospace;
+      padding: 2em;
     }
     input, button {
-      font-size: 18px;
-      padding: 10px;
-      border-radius: 6px;
-      border: none;
-      margin-top: 10px;
-      margin-right: 10px;
+      padding: 0.5em;
+      font-size: 1em;
+      background-color: #222;
+      color: #eee;
+      border: 1px solid #555;
+      border-radius: 5px;
     }
-    input {
-      width: 200px;
+    .result {
+      margin-top: 2em;
+      background: #1a1a1a;
+      padding: 1em;
+      border-radius: 8px;
     }
-    button {
-      background-color: #00ffff;
-      color: black;
-      cursor: pointer;
-    }
-    .output {
-      margin-top: 15px;
-      font-size: 18px;
-      color: #ff0;
+    .equation {
+      font-size: 1.1em;
+      background: #222;
+      padding: 1em;
+      border-radius: 5px;
+      margin: 1em 0;
     }
   </style>
 </head>
 <body>
-  <h1>📘 Albasatneh RH Equation</h1>
+  <h1>Albasatneh – Zeta Zero Simulator</h1>
+  <p>Accurate Estimation of Non-Trivial Zeta Zeros</p>
 
-  <div class="section">
-    <strong>Presented by:</strong> Alaa Sheikh Albasatneh<br>
-    <strong>Nationality:</strong> Syrian<br>
-    <strong>Date:</strong> <span id="today-date"></span>
+  <div class="equation">
+    <b>Equation:</b><br>
+    t₀(k) = 2π·k + C₀ + Σβₙ·xⁿ + α₀ + α₁·x + α₂·x²<br>
+    where x = ln(k) / ln(ln(k))<br>
+    C₀ = -6.180555<br>
+    β = [0.774963, -0.225223, 0.053304, -0.010113, 0.001562, -0.000200, 0.000020, -0.000002, 0.0000001]
   </div>
 
-  <div class="section">
-    <h2>🔷 Compute Root tₖ</h2>
-    <input type="number" id="k-input" placeholder="Enter k">
-    <button onclick="computeTk()">Compute tₖ</button>
-    <div class="output" id="tk-output"></div>
-  </div>
+  <label for="kval">Enter k:</label>
+  <input type="number" id="kval" value="100">
+  <button onclick="simulate()">Estimate Zero</button>
 
-  <div class="section">
-    <h2>🔷 Equation</h2>
-    <div class="code">
-      tₖ = [2πk + C₀ + ∑ βₙ (ln k / ln ln k)ⁿ] / f
-    </div>
-  </div>
-
-  <div class="section">
-    <h2>🔷 Constants</h2>
-    <div class="code">
-      f = 1
-      C₀ = -6.180555
-      c = 0.844327
-    </div>
-  </div>
-
-  <div class="section">
-    <h2>🔷 βₙ Coefficients</h2>
-    <div class="code">
-      β = [
-        +0.774963,
-        -0.225223,
-        +0.053304,
-        -0.010113,
-        +0.001562,
-        -0.000200,
-        +0.000020,
-        +0.000002,
-        +0.0000001,
-        +0.00000001
-      ]
-    </div>
-  </div>
+  <div class="result" id="output"></div>
 
   <script>
-    // التاريخ الحالي
-    document.getElementById("today-date").innerText = new Date().toDateString();
-
-    // حساب t_k باستخدام المعادلة
-    function computeTk() {
-      const k = parseFloat(document.getElementById('k-input').value);
-      if (isNaN(k) || k <= 0) {
-        document.getElementById('tk-output').innerText = "⚠️ Please enter a valid k > 0";
-        return;
-      }
-
-      const C_0 = -6.180555;
-      const f = 1;
-      const beta = [
-        0.774963, -0.225223, 0.053304, -0.010113, 0.001562,
-        -0.000200, 0.000020, 0.000002, 0.0000001, 0.00000001
-      ];
-
-      const ln_k = Math.log(k);
-      const ln_ln_k = Math.log(ln_k);
-      const x = ln_k / ln_ln_k;
-
-      let R_k = 0;
+    function simulate() {
+      const k = parseInt(document.getElementById("kval").value);
+      const x = Math.log(k) / Math.log(Math.log(k));
+      const beta = [0.774963, -0.225223, 0.053304, -0.010113, 0.001562, -0.000200, 0.000020, -0.000002, 0.0000001];
+      let R = 0;
       for (let n = 0; n < beta.length; n++) {
-        R_k += beta[n] * Math.pow(x, n);
+        R += beta[n] * Math.pow(x, n);
       }
+      const alpha0 = 0.0, alpha1 = 0.0, alpha2 = 0.0;
+      const C0 = -6.180555;
+      const t0 = 2 * Math.PI * k + C0 + R + alpha0 + alpha1 * x + alpha2 * x * x;
 
-      const tk = (2 * Math.PI * k + C_0 + R_k) / f;
-      document.getElementById('tk-output').innerText = `tₖ ≈ ${tk}`;
+      document.getElementById("output").innerHTML = `
+        <b>k = ${k}</b><br>
+        Estimated t₀ ≈ ${t0.toFixed(12)}<br>
+        <i>Note:</i> This is a simulated approximation only.<br>
+        Newton refinement and true root require Python backend or WASM.
+      `;
     }
   </script>
 </body>
