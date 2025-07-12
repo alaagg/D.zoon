@@ -1,78 +1,45 @@
-<!DOCTYPE html><html lang="ar">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>آلة استخراج الجذور غير التافهة - Albasatneh RH</title>
+  <title>Albasatneh RH Resonance Formula</title>
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f0f0f0;
-      color: #222;
+      background-color: #111;
+      color: #eee;
+      font-family: 'Courier New', monospace;
+      padding: 20px;
+    }
+    h1 {
+      color: #00ffcc;
       text-align: center;
-      padding: 40px;
     }
-    .container {
-      background: white;
-      border-radius: 20px;
-      padding: 30px;
-      max-width: 800px;
+    .author {
+      text-align: center;
+      color: #bbb;
+      margin-bottom: 40px;
+    }
+    .formula-block {
+      background-color: #222;
+      border-left: 4px solid #00ffff;
+      padding: 20px;
+      width: fit-content;
       margin: auto;
-      box-shadow: 0 0 20px rgba(0,0,0,0.1);
-    }
-    input, button {
       font-size: 1.2em;
-      padding: 10px;
-      border-radius: 10px;
-      margin: 10px;
-    }
-    button {
-      background-color: #007bff;
-      color: white;
-      border: none;
-    }
-    .result {
-      margin-top: 20px;
-      font-size: 1.4em;
-      color: #0a0;
+      line-height: 1.8em;
+      white-space: pre-wrap;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>آلة Albasatneh لاستخراج الجذور غير التافهة</h1>
-    <p>
-      أدخل رقم الجذر <strong>k</strong> وستحصل على الجذر <strong>t<sub>k</sub></strong> بدقة مطلقة.
-    </p>
-    <input id="kval" type="number" min="1" placeholder="أدخل k">
-    <button onclick="computeRoot()">احسب الجذر</button>
-    <div class="result" id="resultBox"></div>
-  </div>  <script>
-    function computeRoot() {
-      const k = parseInt(document.getElementById("kval").value);
-      if (!k || k < 1) {
-        document.getElementById("resultBox").innerText = "يرجى إدخال قيمة صالحة لـ k (أكبر من 0).";
-        return;
-      }
-
-      const C0 = -6.180555;
-      const beta = [
-        0.774963, -0.225223, 0.053304, -0.010113,
-        0.001562, -0.000200, 0.000020, -0.000002,
-        0.0000001
-      ];
-
-      const x = Math.log(k) / Math.log(Math.log(k));
-      let poly = 0;
-      for (let n = 0; n < beta.length; n++) {
-        poly += beta[n] * Math.pow(x, n);
-      }
-
-      const t0 = 2 * Math.PI * k + C0 + poly;
-      const theta = (t0 - C0) / (2 * Math.PI * k);
-      const a = (t0 - C0) / Math.sin(theta);
-      const s0_imag = t0 - a * Math.sin(theta);
-      const t_final = s0_imag + a * Math.sin(theta);
-
-      document.getElementById("resultBox").innerText = `t_${k} ≈ ${t_final.toFixed(12)}`;
-    }
-  </script></body>
+  <h1>Albasatneh RH Resonance Formula</h1>
+  <div class="author">
+    By: Alaa Sheikh Albasatneh (Syria) – July 2025
+  </div>
+  <div class="formula-block">
+    t_k  =  s_0^imag + a_k * sin(\theta_k)
+    a_k  =  (t_k - C_0) / sin(\theta_k)
+    \theta_k  =  (t_0 - C_0) / (2 \pi k)
+    t_0  =  2 \pi k + C_0 + \sum \beta_n x^n
+  </div>
+</body>
 </html>
