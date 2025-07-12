@@ -28,6 +28,9 @@
       line-height: 1.8em;
       white-space: pre-wrap;
     }
+    .math {
+      color: #fff;
+    }
   </style>
 </head>
 <body>
@@ -36,10 +39,15 @@
     By: Alaa Sheikh Albasatneh (Syria) – July 2025
   </div>
   <div class="formula-block">
-    t_k  =  s_0^imag + a_k * sin(\theta_k)
-    a_k  =  (t_k - C_0) / sin(\theta_k)
-    \theta_k  =  (t_0 - C_0) / (2 \pi k)
-    t_0  =  2 \pi k + C_0 + \sum \beta_n x^n
+    t_k = s0_imag + a_k * sin(theta_k)
+    a_k = (t_k - C0) / sin(theta_k)
+    theta_k = (t0 - C0) / (2 * pi * k)
+    t0 = 2 * pi * k + C0 + sum(beta_n * x^n)where:
+x = ln(k) / ln(ln(k))
+C0 = -6.180555
+beta_n = polynomial correction coefficients
+s0_imag = fixed imaginary center reference
+
   </div>
 </body>
 </html>
