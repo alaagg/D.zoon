@@ -1,117 +1,96 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Alaa's Critical Phase Equation - Full Mathematical Model</title>
+  <meta charset="UTF-8">
+  <title>Blockchain Miner Web Interface</title>
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
   <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin: 2rem;
-      background: #f9f9f9;
-      color: #222;
-      line-height: 1.6;
-      max-width: 900px;
-    }
-    h1, h2 {
-      color: #003366;
-      border-bottom: 2px solid #003366;
-      padding-bottom: 0.25rem;
-      margin-top: 2rem;
-    }
-    pre {
-      background: #eee;
-      padding: 1rem;
-      border-radius: 6px;
-      overflow-x: auto;
-      font-family: 'Courier New', Courier, monospace;
-      line-height: 1.4;
-      font-size: 1rem;
-      margin: 1rem 0;
-    }
-    p {
-      margin: 1rem 0;
-    }
-    .formula {
-      font-family: 'Courier New', Courier, monospace;
-      background: #f0f0f0;
-      border-left: 4px solid #003366;
-      padding: 0.5rem 1rem;
-      margin: 1rem 0 2rem 0;
-      white-space: pre-wrap;
-    }
-    footer {
-      margin-top: 4rem;
-      font-size: 0.9rem;
-      color: #555;
-      border-top: 1px solid #ccc;
-      padding-top: 1rem;
-      text-align: center;
-    }
+    body { font-family: monospace; background: #0f0f0f; color: #00ff66; padding: 20px; }
+    input, button { padding: 8px; margin: 5px 0; width: 100%; font-family: monospace; }
+    button { background: #00ffaa; border: none; font-weight: bold; cursor: pointer; }
+    .section { margin-bottom: 20px; }
+    .output { background: #111; padding: 15px; white-space: pre-wrap; border-left: 4px solid #00ffaa; margin-top: 10px; }
   </style>
 </head>
 <body>
-  <h1>Alaa's Critical Phase Equation - Full Mathematical Model</h1>
+  <h1>🚀 Blockchain Mining Web Interface</h1>  <div class="section">
+    <button onclick="fetchLatestBlock()">🌐 استيراد آخر بلوك من الشبكة</button>
+    <label>Block Number:</label>
+    <input id="block_number" type="number" value="">
+    <label>Timestamp (Unix):</label>
+    <input id="timestamp" type="number" value="">
+    <label>Merkle Root:</label>
+    <input id="merkle_root" type="text" value="">
+    <label>Previous Block Hash:</label>
+    <input id="prev_hash" type="text" value="">
+    <label>Difficulty (Bits):</label>
+    <input id="difficulty_bits" type="number" value="20">
+    <label>Nonce (manual or leave blank):</label>
+    <input id="manual_nonce" type="text" value="">
+    <button onclick="startMining()">🔍 ابدأ التعدين</button>
+  </div>  <div class="output" id="output">⛏️ جاهز للتعدين...</div>  <script>
+    async function fetchLatestBlock() {
+      const response = await fetch("https://blockstream.info/api/blocks");
+      const blocks = await response.json();
+      const latest = blocks[0];
 
-  <h2>1. Introduction</h2>
-  <p>
-    This document contains the complete mathematical model for Alaa's Critical Phase Equation, including the precise relationships between the root number <em>k</em> and the constants in the equation. Each constant is expressed as a function of <em>k</em> for exact computations.
-  </p>
+      document.getElementById("block_number").value = latest.height + 1;
+      document.getElementById("timestamp").value = Math.floor(Date.now() / 1000);
+      document.getElementById("prev_hash").value = latest.id;
+      document.getElementById("merkle_root").value = "";
+    }
 
-  <h2>2. Constants and Their Equations</h2>
+    async function startMining() {
+      const output = document.getElementById("output");
+      output.textContent = "🔄 جاري تحميل المحرك...";
+      let pyodide = await loadPyodide();
+      output.textContent = "⛏️ جاري التعدين...";
 
-  <h3>1. Constant <code>f<sub>k</sub></code>:</h3>
-  <div class="formula">
-    f_k = exp(0.4915 * log(k) - 0.8898)
-  </div>
+      const block_number = document.getElementById("block_number").value;
+      const timestamp = document.getElementById("timestamp").value;
+      const merkle_root = document.getElementById("merkle_root").value;
+      const prev_hash = document.getElementById("prev_hash").value;
+      const difficulty_bits = parseInt(document.getElementById("difficulty_bits").value);
+      const manual_nonce = document.getElementById("manual_nonce").value;
 
-  <h3>2. Constant <code>c<sub>k</sub></code>:</h3>
-  <div class="formula">
-    c_k = -0.00658 * log(k) + 0.11588
-  </div>
+      const code = `
+import hashlib, time
+block_number = ${block_number}
+timestamp = ${timestamp}
+merkle_root = "${merkle_root}"
+prev_hash = "${prev_hash}"
+difficulty_bits = ${difficulty_bits}
+manual_nonce = "${manual_nonce}"
 
-  <h3>3. Constant <code>d<sub>k</sub></code>:</h3>
-  <div class="formula">
-    d_k = -0.00441 * log(k) + 0.07507
-  </div>
+def double_sha256(data):
+    return hashlib.sha256(hashlib.sha256(data.encode()).digest()).hexdigest()
 
-  <h3>4. Constant <code>a<sub>k</sub></code> (5th degree polynomial in log(k)):</h3>
-  <div class="formula">
-a_k = 0.525
-+ 0.002999 * log(k)
-+ 0.00000167 * log(k)^2
-- 0.0000463 * log(k)^3
-+ 0.000000421 * log(k)^4
-+ 0.000000146 * log(k)^5
-  </div>
+def mine_block():
+    prefix = '0' * (difficulty_bits // 4)
+    nonce = int(manual_nonce) if manual_nonce else 0
+    start_time = time.time()
 
-  <h3>5. Constant <code>b<sub>k</sub></code> (5th degree polynomial in log(k)):</h3>
-  <div class="formula">
-b_k = 0.110
-- 4.54e-6 * log(k)
-- 7.90e-4 * log(k)^2
-- 8.71e-6 * log(k)^3
-+ 1.42e-5 * log(k)^4
-- 6.91e-7 * log(k)^5
-  </div>
+    while True:
+        block_data = f"{block_number}{timestamp}{merkle_root}{prev_hash}{nonce}"
+        block_hash = double_sha256(block_data)
 
-  <h3>6. Spectral value <code>A<sub>k</sub></code>:</h3>
-  <div class="formula">
-    A_k = -0.18305 * log(k) + 3.86171
-  </div>
+        if block_hash.startswith(prefix):
+            elapsed = time.time() - start_time
+            print("\n✅ نونس ناجح!")
+            print("Nonce:", nonce)
+            print("Hash:", block_hash)
+            print("⏱️ الوقت:", round(elapsed, 2), "ثانية")
+            break
 
-  <h2>3. Full Critical Phase Equation</h2>
-  <div class="formula">
-f_k * t_k + c_k * sin(b_k * t_k) + a_k * ln(A_k) + d_k * ln(A_k + 1) - arcsin(1 / A_k) = 2 * pi * k
+        if nonce % 500000 == 0:
+            print(f"... Nonce = {nonce}, Hash = {block_hash[:16]}...")
 
-where:
-- k: root index (1, 2, 3, ...)
-- t_k: imaginary part of the zero to be solved for
-- f_k, c_k, d_k, a_k, b_k, A_k: constants as above
-  </div>
+        nonce += 1
 
-  <footer>
-    Generated by ChatGPT for Alaa sheıkh albasatneh, 2025.
-  </footer>
-</body>
+mine_block()`;
+
+      pyodide.setStdout({ batched: (msg) => output.textContent += "\n" + msg });
+      pyodide.setStderr({ batched: (msg) => output.textContent += "\nخطأ: " + msg });
+      await pyodide.runPythonAsync(code);
+    }
+  </script></body>
 </html>
