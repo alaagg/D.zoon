@@ -1,96 +1,113 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Blockchain Miner Web Interface</title>
-  <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
+  <meta charset="UTF-8" />
+  <title>Spectral Evolution Mining</title>
   <style>
-    body { font-family: monospace; background: #0f0f0f; color: #00ff66; padding: 20px; }
-    input, button { padding: 8px; margin: 5px 0; width: 100%; font-family: monospace; }
-    button { background: #00ffaa; border: none; font-weight: bold; cursor: pointer; }
-    .section { margin-bottom: 20px; }
-    .output { background: #111; padding: 15px; white-space: pre-wrap; border-left: 4px solid #00ffaa; margin-top: 10px; }
+    body {
+      background: #101010;
+      color: #00ff99;
+      font-family: monospace;
+      padding: 20px;
+    }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin: 5px 0;
+      background: #1a1a1a;
+      color: #00ff99;
+      border: none;
+      border-radius: 5px;
+    }
+    button {
+      background-color: #00aa00;
+      cursor: pointer;
+    }
+    #stopBtn {
+      background-color: #aa0000;
+    }
+    .output {
+      background: #111;
+      border-left: 5px solid #0f0;
+      padding: 15px;
+      margin-top: 15px;
+      white-space: pre-wrap;
+    }
   </style>
 </head>
 <body>
-  <h1>🚀 Blockchain Mining Web Interface</h1>  <div class="section">
-    <button onclick="fetchLatestBlock()">🌐 استيراد آخر بلوك من الشبكة</button>
-    <label>Block Number:</label>
-    <input id="block_number" type="number" value="">
-    <label>Timestamp (Unix):</label>
-    <input id="timestamp" type="number" value="">
-    <label>Merkle Root:</label>
-    <input id="merkle_root" type="text" value="">
-    <label>Previous Block Hash:</label>
-    <input id="prev_hash" type="text" value="">
-    <label>Difficulty (Bits):</label>
-    <input id="difficulty_bits" type="number" value="20">
-    <label>Nonce (manual or leave blank):</label>
-    <input id="manual_nonce" type="text" value="">
-    <button onclick="startMining()">🔍 ابدأ التعدين</button>
-  </div>  <div class="output" id="output">⛏️ جاهز للتعدين...</div>  <script>
-    async function fetchLatestBlock() {
-      const response = await fetch("https://blockstream.info/api/blocks");
-      const blocks = await response.json();
-      const latest = blocks[0];
+  <h1>Spectral Genetic Mining</h1>
 
-      document.getElementById("block_number").value = latest.height + 1;
-      document.getElementById("timestamp").value = Math.floor(Date.now() / 1000);
-      document.getElementById("prev_hash").value = latest.id;
-      document.getElementById("merkle_root").value = "";
-    }
+  <form id="miningForm">
+    <label>Version (Hex, 4 bytes):</label>
+    <input type="text" id="version" placeholder="e.g., 20000000" required />
 
-    async function startMining() {
-      const output = document.getElementById("output");
-      output.textContent = "🔄 جاري تحميل المحرك...";
-      let pyodide = await loadPyodide();
-      output.textContent = "⛏️ جاري التعدين...";
+    <label>Previous Block Hash (64 hex chars):</label>
+    <input type="text" id="prevHash" placeholder="e.g., 000000...abc" required />
 
-      const block_number = document.getElementById("block_number").value;
-      const timestamp = document.getElementById("timestamp").value;
-      const merkle_root = document.getElementById("merkle_root").value;
-      const prev_hash = document.getElementById("prev_hash").value;
-      const difficulty_bits = parseInt(document.getElementById("difficulty_bits").value);
-      const manual_nonce = document.getElementById("manual_nonce").value;
+    <label>Merkle Root (64 hex chars):</label>
+    <input type="text" id="merkleRoot" placeholder="e.g., 849b62...579f1" required />
 
-      const code = `
-import hashlib, time
-block_number = ${block_number}
-timestamp = ${timestamp}
-merkle_root = "${merkle_root}"
-prev_hash = "${prev_hash}"
-difficulty_bits = ${difficulty_bits}
-manual_nonce = "${manual_nonce}"
+    <label>Timestamp (Hex, 4 bytes):</label>
+    <input type="text" id="timestamp" placeholder="e.g., 5f5b5c50" required />
 
-def double_sha256(data):
-    return hashlib.sha256(hashlib.sha256(data.encode()).digest()).hexdigest()
+    <label>Bits (Difficulty target, 4 bytes):</label>
+    <input type="text" id="bits" placeholder="e.g., 17148edf" required />
 
-def mine_block():
-    prefix = '0' * (difficulty_bits // 4)
-    nonce = int(manual_nonce) if manual_nonce else 0
-    start_time = time.time()
+    <label>Sensitivity (e.g., 0.001):</label>
+    <input type="number" step="0.0001" id="sensitivity" value="0.001" required />
 
-    while True:
-        block_data = f"{block_number}{timestamp}{merkle_root}{prev_hash}{nonce}"
-        block_hash = double_sha256(block_data)
+    <label>Generation Size:</label>
+    <input type="number" id="generationSize" value="100000" required />
 
-        if block_hash.startswith(prefix):
-            elapsed = time.time() - start_time
-            print("\n✅ نونس ناجح!")
-            print("Nonce:", nonce)
-            print("Hash:", block_hash)
-            print("⏱️ الوقت:", round(elapsed, 2), "ثانية")
-            break
+    <label>Elite Percentage (e.g., 0.001):</label>
+    <input type="number" step="0.0001" id="elitePercent" value="0.001" required />
 
-        if nonce % 500000 == 0:
-            print(f"... Nonce = {nonce}, Hash = {block_hash[:16]}...")
+    <button type="submit" id="startBtn">Start Mining</button>
+    <button type="button" id="stopBtn">Stop Mining</button>
+  </form>
 
-        nonce += 1
+  <div class="output" id="output"></div>
 
-mine_block()`;
+  <script>
+    let mining = false;
 
-      pyodide.setStdout({ batched: (msg) => output.textContent += "\n" + msg });
-      pyodide.setStderr({ batched: (msg) => output.textContent += "\nخطأ: " + msg });
-      await pyodide.runPythonAsync(code);
-    }
-  </script></body>
+    document.getElementById('miningForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      if (mining) return;
+      mining = true;
+
+      const version = document.getElementById('version').value;
+      const prevHash = document.getElementById('prevHash').value;
+      const merkleRoot = document.getElementById('merkleRoot').value;
+      const timestamp = document.getElementById('timestamp').value;
+      const bits = document.getElementById('bits').value;
+      const sensitivity = parseFloat(document.getElementById('sensitivity').value);
+      const generationSize = parseInt(document.getElementById('generationSize').value);
+      const elitePercent = parseFloat(document.getElementById('elitePercent').value);
+
+      document.getElementById('output').textContent = "⛏️ Mining started...";
+
+      const response = await fetch('/start', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          version, prevHash, merkleRoot, timestamp, bits,
+          sensitivity, generationSize, elitePercent
+        })
+      });
+
+      const data = await response.json();
+      document.getElementById('output').textContent = data.message;
+      mining = false;
+    });
+
+    document.getElementById('stopBtn').addEventListener('click', async function () {
+      if (!mining) return;
+      await fetch('/stop', { method: 'POST' });
+      mining = false;
+      document.getElementById('output').textContent += "\n⛔ Mining stopped.";
+    });
+  </script>
+</body>
 </html>
