@@ -1,8 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>Spectral Evolution Mining</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body {
       background: #101010;
@@ -26,6 +26,9 @@
     #stopBtn {
       background-color: #aa0000;
     }
+    #exportBtn {
+      background-color: #0055aa;
+    }
     .output {
       background: #111;
       border-left: 5px solid #0f0;
@@ -33,81 +36,125 @@
       margin-top: 15px;
       white-space: pre-wrap;
     }
+    #statsDisplay {
+      margin-top: 15px;
+    }
   </style>
 </head>
 <body>
-  <h1>Spectral Genetic Mining</h1>
-
-  <form id="miningForm">
-    <label>Version (Hex, 4 bytes):</label>
-    <input type="text" id="version" placeholder="e.g., 20000000" required />
-
-    <label>Previous Block Hash (64 hex chars):</label>
-    <input type="text" id="prevHash" placeholder="e.g., 000000...abc" required />
-
-    <label>Merkle Root (64 hex chars):</label>
-    <input type="text" id="merkleRoot" placeholder="e.g., 849b62...579f1" required />
-
-    <label>Timestamp (Hex, 4 bytes):</label>
-    <input type="text" id="timestamp" placeholder="e.g., 5f5b5c50" required />
-
-    <label>Bits (Difficulty target, 4 bytes):</label>
-    <input type="text" id="bits" placeholder="e.g., 17148edf" required />
-
-    <label>Sensitivity (e.g., 0.001):</label>
-    <input type="number" step="0.0001" id="sensitivity" value="0.001" required />
-
-    <label>Generation Size:</label>
-    <input type="number" id="generationSize" value="100000" required />
-
-    <label>Elite Percentage (e.g., 0.001):</label>
-    <input type="number" step="0.0001" id="elitePercent" value="0.001" required />
-
+  <h1>Spectral Genetic Mining</h1>  <form id="miningForm">
+    <label>Batch Size:</label>
+    <input type="number" id="batchSize" value="2000000" required />
     <button type="submit" id="startBtn">Start Mining</button>
     <button type="button" id="stopBtn">Stop Mining</button>
-  </form>
-
-  <div class="output" id="output"></div>
+    <button type="button" id="exportBtn">Export Results</button>
+  </form>  <div class="output" id="output"></div>  <div id="statsDisplay">
+    <h3>⏱️ Runtime: <span id="timer">00:00</span></h3>
+    <h3>📊 Hash Count: <span id="hashCount">0</span></h3>
+    <h3>✅ Successes: <span id="successCount">0</span></h3>
+    <h3>🎯 Best Proximity: <span id="proximity">0%</span></h3>
+    <h3>🏆 Golden Nonce: <span id="goldenNonce">—</span></h3>
+  </div><canvas id="proximityChart" width="400" height="150"></canvas>
 
   <script>
     let mining = false;
+    let timerInterval;
+    let seconds = 0;
+    const proximityData = [];
+    const labels = [];
+    const ctx = document.getElementById('proximityChart').getContext('2d');
+    const chart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Best Proximity %',
+          data: proximityData,
+          borderColor: '#00ff99',
+          backgroundColor: 'transparent',
+          tension: 0.2
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 100
+          }
+        }
+      }
+    });
+
+    function updateStats() {
+      fetch('/stats')
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById('hashCount').textContent = data.hash_count;
+          document.getElementById('successCount').textContent = data.success_count;
+          const prox = data.best_nonce?.proximity_percent || 0;
+          document.getElementById('proximity').textContent = prox.toFixed(6) + '%';
+          const nonce = data.best_nonce?.golden_nonce || '—';
+          document.getElementById('goldenNonce').textContent = nonce;
+          if (!labels.includes(seconds.toString())) {
+            labels.push(seconds.toString());
+            proximityData.push(prox);
+            chart.update();
+          }
+        });
+    }
+
+    function startTimer() {
+      seconds = 0;
+      timerInterval = setInterval(() => {
+        seconds++;
+        const mins = String(Math.floor(seconds / 60)).padStart(2, '0');
+        const secs = String(seconds % 60).padStart(2, '0');
+        document.getElementById('timer').textContent = `${mins}:${secs}`;
+        updateStats();
+      }, 1000);
+    }
+
+    function stopTimer() {
+      clearInterval(timerInterval);
+    }
 
     document.getElementById('miningForm').addEventListener('submit', async function (e) {
       e.preventDefault();
       if (mining) return;
       mining = true;
 
-      const version = document.getElementById('version').value;
-      const prevHash = document.getElementById('prevHash').value;
-      const merkleRoot = document.getElementById('merkleRoot').value;
-      const timestamp = document.getElementById('timestamp').value;
-      const bits = document.getElementById('bits').value;
-      const sensitivity = parseFloat(document.getElementById('sensitivity').value);
-      const generationSize = parseInt(document.getElementById('generationSize').value);
-      const elitePercent = parseFloat(document.getElementById('elitePercent').value);
-
+      const batchSize = parseInt(document.getElementById('batchSize').value);
       document.getElementById('output').textContent = "⛏️ Mining started...";
 
-      const response = await fetch('/start', {
+      await fetch('/start', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          version, prevHash, merkleRoot, timestamp, bits,
-          sensitivity, generationSize, elitePercent
-        })
+        body: JSON.stringify({ batchSize })
       });
 
-      const data = await response.json();
-      document.getElementById('output').textContent = data.message;
-      mining = false;
+      startTimer();
     });
 
     document.getElementById('stopBtn').addEventListener('click', async function () {
       if (!mining) return;
       await fetch('/stop', { method: 'POST' });
       mining = false;
+      stopTimer();
       document.getElementById('output').textContent += "\n⛔ Mining stopped.";
     });
-  </script>
-</body>
+
+    document.getElementById('exportBtn').addEventListener('click', () => {
+      fetch('/stats')
+        .then(res => res.json())
+        .then(data => {
+          const blob = new Blob([JSON.stringify(data.best_nonce, null, 2)], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'golden_nonce.json';
+          a.click();
+          URL.revokeObjectURL(url);
+        });
+    });
+  </script></body>
 </html>
