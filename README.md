@@ -1,160 +1,69 @@
 <!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Spectral Evolution Mining</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <title>Smart XGBoost Bitcoin Mining</title>
   <style>
     body {
-      background: #101010;
-      color: #00ff99;
+      background: #121212;
+      color: #00ffcc;
       font-family: monospace;
       padding: 20px;
     }
-    input, button {
+    input, button, textarea {
       width: 100%;
       padding: 10px;
-      margin: 5px 0;
-      background: #1a1a1a;
-      color: #00ff99;
-      border: none;
-      border-radius: 5px;
+      margin: 8px 0;
+      background: #1e1e1e;
+      color: #00ffcc;
+      border: 1px solid #00ffcc;
+      border-radius: 4px;
     }
     button {
-      background-color: #00aa00;
+      background: #006666;
       cursor: pointer;
     }
-    #stopBtn {
-      background-color: #aa0000;
-    }
-    #exportBtn {
-      background-color: #0055aa;
-    }
     .output {
-      background: #111;
-      border-left: 5px solid #0f0;
+      background: #000;
       padding: 15px;
-      margin-top: 15px;
+      margin-top: 20px;
+      border-left: 5px solid #00cc99;
       white-space: pre-wrap;
-    }
-    #statsDisplay {
-      margin-top: 15px;
     }
   </style>
 </head>
 <body>
-  <h1>Spectral Genetic Mining</h1>  <form id="miningForm">
-    <label>Batch Size:</label>
-    <input type="number" id="batchSize" value="2000000" required />
-    <button type="submit" id="startBtn">Start Mining</button>
-    <button type="button" id="stopBtn">Stop Mining</button>
-    <button type="button" id="exportBtn">Export Results</button>
-  </form>  <div class="output" id="output"></div>  <div id="statsDisplay">
-    <h3>⏱️ Runtime: <span id="timer">00:00</span></h3>
-    <h3>📊 Hash Count: <span id="hashCount">0</span></h3>
-    <h3>✅ Successes: <span id="successCount">0</span></h3>
-    <h3>🎯 Best Proximity: <span id="proximity">0%</span></h3>
-    <h3>🏆 Golden Nonce: <span id="goldenNonce">—</span></h3>
-  </div><canvas id="proximityChart" width="400" height="150"></canvas>
+  <h1>🧠 Smart XGBoost Bitcoin Mining</h1><label>Worker Full Name (e.g., alaasilver.worker1):</label> <input type="text" id="workerName" value="alaasilver.worker1" readonly />
 
-  <script>
-    let mining = false;
-    let timerInterval;
-    let seconds = 0;
-    const proximityData = [];
-    const labels = [];
-    const ctx = document.getElementById('proximityChart').getContext('2d');
-    const chart = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: labels,
-        datasets: [{
-          label: 'Best Proximity %',
-          data: proximityData,
-          borderColor: '#00ff99',
-          backgroundColor: 'transparent',
-          tension: 0.2
-        }]
-      },
-      options: {
-        scales: {
-          y: {
-            beginAtZero: true,
-            max: 100
-          }
-        }
+<label>Merkle Root:</label> <input type="text" id="merkleRoot" placeholder="Enter Merkle Root" />
+
+<label>Previous Block Hash:</label> <input type="text" id="prevHash" placeholder="Enter Previous Block Hash" />
+
+<label>Bits (Difficulty):</label> <input type="text" id="bits" placeholder="Enter difficulty bits" />
+
+<label>Timestamp:</label> <input type="text" id="timestamp" placeholder="Enter block timestamp" />
+
+<label>Start Nonce Range:</label> <input type="number" id="nonceStart" value="0" />
+
+<label>End Nonce Range:</label> <input type="number" id="nonceEnd" value="1000000" />
+
+<button onclick="startMining()">🚀 Start Smart Mining</button>
+
+  <div class="output" id="outputBox">Output will appear here...</div>  <script>
+    function startMining() {
+      const merkle = document.getElementById('merkleRoot').value.trim();
+      const prev = document.getElementById('prevHash').value.trim();
+      const bits = document.getElementById('bits').value.trim();
+      const time = document.getElementById('timestamp').value.trim();
+      const nonceStart = parseInt(document.getElementById('nonceStart').value);
+      const nonceEnd = parseInt(document.getElementById('nonceEnd').value);
+
+      const output = document.getElementById('outputBox');
+      output.textContent = "🧠 Starting smart mining with machine learning logic...\n(This is only a frontend template – backend logic must be connected using Flask or Node.js with real hashing and model evaluation)\n\n";
+
+      for (let nonce = nonceStart; nonce <= nonceStart + 20; nonce++) {
+        output.textContent += `Checking nonce ${nonce}...\n`;
       }
-    });
-
-    function updateStats() {
-      fetch('/stats')
-        .then(res => res.json())
-        .then(data => {
-          document.getElementById('hashCount').textContent = data.hash_count;
-          document.getElementById('successCount').textContent = data.success_count;
-          const prox = data.best_nonce?.proximity_percent || 0;
-          document.getElementById('proximity').textContent = prox.toFixed(6) + '%';
-          const nonce = data.best_nonce?.golden_nonce || '—';
-          document.getElementById('goldenNonce').textContent = nonce;
-          if (!labels.includes(seconds.toString())) {
-            labels.push(seconds.toString());
-            proximityData.push(prox);
-            chart.update();
-          }
-        });
+      output.textContent += "\n✅ Simulated scan complete. Connect to backend for real hash results.";
     }
-
-    function startTimer() {
-      seconds = 0;
-      timerInterval = setInterval(() => {
-        seconds++;
-        const mins = String(Math.floor(seconds / 60)).padStart(2, '0');
-        const secs = String(seconds % 60).padStart(2, '0');
-        document.getElementById('timer').textContent = `${mins}:${secs}`;
-        updateStats();
-      }, 1000);
-    }
-
-    function stopTimer() {
-      clearInterval(timerInterval);
-    }
-
-    document.getElementById('miningForm').addEventListener('submit', async function (e) {
-      e.preventDefault();
-      if (mining) return;
-      mining = true;
-
-      const batchSize = parseInt(document.getElementById('batchSize').value);
-      document.getElementById('output').textContent = "⛏️ Mining started...";
-
-      await fetch('/start', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ batchSize })
-      });
-
-      startTimer();
-    });
-
-    document.getElementById('stopBtn').addEventListener('click', async function () {
-      if (!mining) return;
-      await fetch('/stop', { method: 'POST' });
-      mining = false;
-      stopTimer();
-      document.getElementById('output').textContent += "\n⛔ Mining stopped.";
-    });
-
-    document.getElementById('exportBtn').addEventListener('click', () => {
-      fetch('/stats')
-        .then(res => res.json())
-        .then(data => {
-          const blob = new Blob([JSON.stringify(data.best_nonce, null, 2)], { type: 'application/json' });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = 'golden_nonce.json';
-          a.click();
-          URL.revokeObjectURL(url);
-        });
-    });
   </script></body>
 </html>
