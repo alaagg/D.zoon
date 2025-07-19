@@ -1,63 +1,71 @@
-<!DOCTYPE html><html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Smart Nonce Generator</title>
-  <style>
-    body {
-      font-family: monospace;
-      background: #0f0f0f;
-      color: #00ff99;
-      padding: 40px;
-    }
-    h1 {
-      color: #00ffaa;
-    }
-    input, button {
-      padding: 10px;
-      margin: 10px 0;
-      width: 100%;
-      font-family: monospace;
-      background: #111;
-      color: #00ffcc;
-      border: 1px solid #00ffaa;
-    }
-    .output {
-      background: #111;
-      padding: 15px;
-      margin-top: 20px;
-      border-left: 4px solid #00ffaa;
-      white-space: pre-wrap;
-    }
-  </style>
-</head>
-<body>
-  <h1>🔁 Smart Nonce Generator</h1>
-  <label for="targetInput">🎯 Enter Target (hex):</label>
-  <input type="text" id="targetInput" placeholder="0000000000000000000d233c95f9855bf7f9f4127c8">
-  <button onclick="generateNonce()">Generate Smart Nonce</button>
-  <div class="output" id="output"></div>  <script>
-    function hexToBinArray(hex, width = 256) {
-      return BigInt('0x' + hex).toString(2).padStart(width, '0').split('').map(b => parseInt(b));
-    }
+import tkinter as tk from tkinter import ttk import threading
 
-    function binArrayToInt(bits) {
-      return parseInt(bits.join(''), 2);
-    }
+from adaptive_genetic_nonce_finder import adaptive_genetic
 
-    function generateNonce() {
-      const targetHex = document.getElementById("targetInput").value.trim();
-      if (!targetHex) return;
-      const targetBigInt = BigInt('0x' + targetHex);
-      const targetBits = hexToBinArray(targetHex);
+class NonceMinerGUI: def init(self, root): self.root = root self.root.title("🔥 Smart Nonce Genetic Miner") self.root.geometry("650x500")
 
-      const A_bits = targetBits.slice(-32);
-      const rest = Array.from({ length: 608 }, () => Math.round(Math.random()));
-      const fullBlock = [...A_bits, ...rest];
-      const nonceBits = fullBlock.slice(-32);
-      const nonce = binArrayToInt(nonceBits);
+self.status = tk.StringVar()
+    self.status.set("اضغط 'ابدأ التعدين' للبحث عن Golden Nonce")
 
-      document.getElementById("output").textContent = `✅ Face A (from target):\n${A_bits.join('')}
-\n🧊 Full Block Head (640 bits simulated)\n...\n\n🔁 Nonce (last 32 bits):\n${nonceBits.join('')}\n\n➡️ Smart Nonce = ${nonce}`;
-    }
-  </script></body>
-</html>
+    self.setup_widgets()
+
+def setup_widgets(self):
+    padding = {'padx': 10, 'pady': 5}
+
+    # إدخال بيانات رأس البلوك
+    self.block_header_lbl = ttk.Label(self.root, text="رأس البلوك (Block Header - hex):")
+    self.block_header_lbl.pack(**padding)
+    self.block_header_entry = tk.Text(self.root, height=3, width=80)
+    self.block_header_entry.insert(tk.END, "00000020f61e805a04069b0b1fce7706b5d13428703b5f54"
+                                          "c0fda5bb0b00000000000000c1b725299be481c9e4f38632"
+                                          "75cc2281e8810a9a1b6f8be3e36c1762b52db888")
+    self.block_header_entry.pack(**padding)
+
+    self.target_lbl = ttk.Label(self.root, text="الهدف Target (hex):")
+    self.target_lbl.pack(**padding)
+    self.target_entry = ttk.Entry(self.root, width=80)
+    self.target_entry.insert(0, "000000000000000000000017ce11f285631c553a0c1123a23260dd5da7328084")
+    self.target_entry.pack(**padding)
+
+    self.start_btn = ttk.Button(self.root, text="ابدأ التعدين الذكي", command=self.start_mining)
+    self.start_btn.pack(**padding)
+
+    self.progress = ttk.Progressbar(self.root, mode='indeterminate')
+    self.progress.pack(fill='x', **padding)
+
+    self.status_lbl = ttk.Label(self.root, textvariable=self.status, wraplength=620, justify="center")
+    self.status_lbl.pack(**padding)
+
+    self.result_lbl = tk.Text(self.root, height=10, width=80)
+    self.result_lbl.pack(**padding)
+
+def start_mining(self):
+    self.status.set("⏳ جاري التعدين باستخدام خوارزمية جينية متكيفة...")
+    self.result_lbl.delete("1.0", tk.END)
+    self.progress.start()
+    threading.Thread(target=self.run_miner, daemon=True).start()
+
+def run_miner(self):
+    block_header_hex = self.block_header_entry.get("1.0", tk.END).strip().replace("\n", "")
+    target_hex = self.target_entry.get().strip()
+
+    # مبدئيًا، لا نستخدم هذه القيم في الخوارزمية، لكن يمكن تمريرها مستقبلًا للضغط
+
+    best_nonce, fitness_score = adaptive_genetic(
+        pop_size=300,
+        elite_size=30,
+        generations=150,
+        init_mut=0.1,
+        min_mut=0.001,
+        max_mut=0.2,
+        tour_size=5,
+        improve_thresh=500
+    )
+
+    self.progress.stop()
+    result = f"\n🎯 أفضل نونس تم العثور عليه:\nNonce: {best_nonce}\nFitness: {fitness_score}\n"
+    self.status.set("✅ تم! النونس الذهبي جاهز")
+    self.result_lbl.insert(tk.END, result)
+
+if name == "main": root = tk.Tk() app = NonceMinerGUI(root) root.mainloop()
+
